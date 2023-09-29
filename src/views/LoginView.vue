@@ -49,4 +49,15 @@ export default {
     LoginForm,
   },
 };
+
 </script>
+
+<style scoped>
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <!-- AppBar -->
-    <v-app-bar app flat>
+    <v-app-bar app flat v-if="!isLoginPage">
       <!-- Menu for Small Screens -->
       <v-menu offset-y v-if="isSmallScreen">
         <template v-slot:activator="{ on, attrs }">
@@ -11,7 +11,7 @@
         </template>
         <v-list>
           <!-- Dynamic links -->
-          <router-link v-for="link in links" :key="link.name" :to="link.path">
+          <router-link v-for="link in filteredLinks" :key="link.name" :to="link.path">
             <v-list-item link>
               <v-list-item-title>{{ link.name }}</v-list-item-title>
             </v-list-item>
@@ -41,10 +41,10 @@
     </v-app-bar>
 
     <!-- Sidebar Navigation (Drawer) for Large Screens -->
-    <v-navigation-drawer v-model="drawer" app v-if="!isSmallScreen">
+    <v-navigation-drawer v-model="drawer" app v-if="!isSmallScreen && !isLoginPage">
       <v-list :rounded="true">
         <!-- Dynamic links -->
-        <router-link v-for="link in links" :key="link.name" :to="link.path">
+        <router-link v-for="link in filteredLinks" :key="link.name" :to="link.path">
           <v-list-item link>
             {{ link.name }}
           </v-list-item>
@@ -73,17 +73,14 @@ export default {
       drawer: false,
       links: [
         { name: 'Home', path: '/home' },
-        { name: 'Notifications', path: '/notifications', isAuthenticated: true },
-        { name: 'Profile', path: '/profile', isAuthenticated: true },
-        { name: 'Login', path: '/login', isNotAuthenticated: true },
-        { name: 'Register', path: '/register', isNotAuthenticated: true },
-
+        { name: 'Notifications', path: '/notifications', requiresAuth: true , roles: ['admin', 'customer', 'barber'] },
+        { name: 'Services', path: '/services', requiresAuth: false },
+        { name: 'Profile', path: '/profile', requiresAuth: true, roles: ['admin', 'customer', 'barber'] },
       ],
       isSmallScreen: false, // Initial state
     };
   },
   created() {
-    // Event listener to handle screen resize
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
   },
@@ -118,6 +115,18 @@ export default {
     username() {
       return this.$store.state.app.username;
     },
+    isLoginPage() {
+      return this.$route.path === '/login';
+    },
+    // Compute the links to be shown based on authentication and role
+    filteredLinks() {
+      return this.links.filter(link => {
+        if (link.requiresAuth && !this.isAuthenticated) return false;
+        if (link.requiresGuest && this.isAuthenticated) return false;
+        if (link.roles && !link.roles.includes(this.$store.state.app.role)) return false;
+        return true;
+      });
+    }
   },
 };
 </script>

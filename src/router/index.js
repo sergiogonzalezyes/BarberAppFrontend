@@ -6,7 +6,6 @@ import store from '@/store/app';
 Vue.use(VueRouter);
 
 const routes = [
-
   {
     path: '/',
     name: 'Home',
@@ -21,9 +20,16 @@ const routes = [
     path: '/notifications',
     name: 'Notifications',
     component: () => import('@/views/NotificationsView.vue'),
-    meta: { requiresAuth: true },
+    meta: { requiresAuth: true, requiredRole: ['admin'] },
   },
-  // Fallback route redirects any unmatched routes to '/login'
+  // New Profile Route
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('@/views/ProfileView.vue'),
+    meta: { requiresAuth: true, requiredRole: ['admin', 'customer', 'barber'] },
+  },
+  // Fallback route redirects any unmatched routes to '/'
   {
     path: '/:pathMatch(.*)*',
     redirect: '/',
@@ -39,15 +45,14 @@ const router = new VueRouter({
 // Navigation guard to check authentication and required roles
 router.beforeEach((to, from, next) => {
   const isAuthenticated = store.state.isAuthenticated;
-  const requiredRole = to.meta.requiredRole;
+  const requiredRoles = to.meta.requiredRole;
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isAuthenticated) {
       // User is not authenticated, redirect to login
       next('/login');
-    } else if (requiredRole && store.state.role !== requiredRole) {
+    } else if (requiredRoles && !requiredRoles.includes(store.state.role)) {
       // User is authenticated but does not have the required role, handle this as needed
-      // For example, you could redirect them to an error page
       next('/error');
     } else {
       // User is authenticated and has the required role, allow navigation

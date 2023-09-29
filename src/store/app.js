@@ -26,12 +26,15 @@ export default {
   },
   actions: {
     login({ commit }, { username, password }) {
-      console.log(username, password)
+
       const hardcodedUsername = 'admin';
       const hardcodedPassword = 'admin';
 
       const hardcodedGuestUsername = 'guest';
       const hardcodedGuestPassword = 'guest';
+
+      const hardcodedCustomerUsername = 'customer';
+      const hardcodedCustomerPassword = 'customer';
 
       if (username === hardcodedUsername && password === hardcodedPassword) {
         console.log('user logged in successfully')
@@ -43,6 +46,12 @@ export default {
         commit('setAuthenticated', true);
         commit('setUsername', username);
         commit('setRole', 'guest');
+        localStorage.setItem('userIsAuthenticated', 'true');
+      }
+      else if (username === hardcodedCustomerUsername && password === hardcodedCustomerPassword) {
+        commit('setAuthenticated', true);
+        commit('setUsername', username);
+        commit('setRole', 'customer');
         localStorage.setItem('userIsAuthenticated', 'true');
       }
 
