@@ -1,8 +1,8 @@
-.DS_Store
-.AppleDouble
-.LSOverride
+DS_Store
+AppleDouble
+LSOverride
 node_modules/
 dist/
 npm-debug.log
 yarn-error.log
-.vscode/
+vscode
