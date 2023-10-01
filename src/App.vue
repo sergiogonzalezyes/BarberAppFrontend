@@ -74,6 +74,7 @@ export default {
       links: [
         { name: 'Home', path: '/home' },
         { name: 'Notifications', path: '/notifications', requiresAuth: true , roles: ['admin', 'customer', 'barber'] },
+        { name: 'Schedule', path: '/schedule', requiresAuth: true, roles: ['admin', 'barber'] },
         { name: 'Services', path: '/services', requiresAuth: false },
         { name: 'Profile', path: '/profile', requiresAuth: true, roles: ['admin', 'customer', 'barber'] },
       ],
@@ -95,7 +96,7 @@ export default {
       if (this.isAuthenticated) {
         this.$store.dispatch('app/logout')
           .then(() => {
-            this.$router.push('/login')
+            this.$router.push('/')
               .catch(err => {
                 if (err.name !== 'NavigationDuplicated') throw err;
               });
@@ -126,7 +127,7 @@ export default {
         if (link.roles && !link.roles.includes(this.$store.state.app.role)) return false;
         return true;
       });
-    }
+    },
   },
 };
 </script>

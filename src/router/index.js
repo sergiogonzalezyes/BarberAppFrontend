@@ -22,12 +22,19 @@ const routes = [
     component: () => import('@/views/NotificationsView.vue'),
     meta: { requiresAuth: true, requiredRole: ['admin'] },
   },
-  // New Profile Route
+  // Profile Route
   {
     path: '/profile',
     name: 'Profile',
     component: () => import('@/views/ProfileView.vue'),
     meta: { requiresAuth: true, requiredRole: ['admin', 'customer', 'barber'] },
+  },
+  // Schedule Route
+  {
+    path: '/schedule',
+    name: 'Schedule',
+    component: () => import('@/views/ScheduleView.vue'),
+    meta: { requiresAuth: true, requiredRole: ['admin', 'barber'] },
   },
   // Fallback route redirects any unmatched routes to '/'
   {
@@ -45,23 +52,35 @@ const router = new VueRouter({
 // Navigation guard to check authentication and required roles
 router.beforeEach((to, from, next) => {
   const isAuthenticated = store.state.isAuthenticated;
+  const role = store.state.role; // assuming role is stored here
   const requiredRoles = to.meta.requiredRole;
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!isAuthenticated) {
       // User is not authenticated, redirect to login
       next('/login');
-    } else if (requiredRoles && !requiredRoles.includes(store.state.role)) {
+    } else if (requiredRoles && !requiredRoles.includes(role)) {
       // User is authenticated but does not have the required role, handle this as needed
       next('/error');
     } else {
       // User is authenticated and has the required role, allow navigation
       next();
     }
+  } else if (to.path === '/login' && isAuthenticated) {
+    // If trying to access login page while authenticated, redirect based on role
+    switch (role) {
+      case 'admin':
+      case 'barber':
+        next('/schedule');
+        break;
+      default:
+        next('/');
+    }
   } else {
     // Route does not require authentication, allow navigation
     next();
   }
 });
+
 
 export default router;

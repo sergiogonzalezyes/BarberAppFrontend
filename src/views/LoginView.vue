@@ -31,9 +31,13 @@ export default {
         
 
         if (success) {
-          // Redirect to dashboard if login is successful
-          console.log('Login success:');
-          this.$router.push('/dashboard');
+          // Redirect to dashboard if login is successful and user is authenticated as customer
+          // if the user is authenticated as admin or barber, redirect to schedule upon login
+          if (this.$store.state.app.user.role.toLowerCase() === 'admin' || this.$store.state.app.user.role.toLowerCase() === 'barber') {
+            this.$router.push('/schedule');
+          } else {
+            this.$router.push('/home');
+          }
         } else {
           // Set error message to be displayed to the user
           this.errorMsg = 'Invalid username or password';
