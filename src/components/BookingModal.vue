@@ -1,6 +1,6 @@
 <template>
-    <v-dialog v-model="localDialog" class="mx-auto my-12">
-        <v-card class="mx-auto my-12">
+    <v-dialog v-model="localDialog" class="mx-auto">
+        <v-card class="mx-auto">
             <v-card-title>Booking: {{ service.name }}</v-card-title>
             <v-card-text>
                 <v-form ref="form" v-model="valid">
