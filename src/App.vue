@@ -38,6 +38,12 @@
           Welcome!
         </span>
       </v-container>
+      <v-btn 
+        v-if="isAuthenticated && ['admin', 'barber'].includes($store.state.app.role) && $route.path === '/services'" 
+        icon 
+        @click="handleAddService">
+        <v-icon>mdi-plus</v-icon>
+    </v-btn>
     </v-app-bar>
 
     <!-- Sidebar Navigation (Drawer) for Large Screens -->
@@ -108,6 +114,10 @@ export default {
             if (err.name !== 'NavigationDuplicated') throw err;
           });
       }
+    },
+    handleAddService() {
+        // handle the addition of a new service here
+        console.log('Adding new service');
     },
   },
   computed: {

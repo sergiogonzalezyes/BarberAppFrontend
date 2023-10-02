@@ -12,8 +12,32 @@
                         <p>${{ service.price }}</p>
                     </v-card-text>
                     <v-card-actions class="justify-center">
-                        <v-btn text color="blue" @click="handleBookNow(service)">Book Now!</v-btn>
-                    </v-card-actions>
+                    <!-- If user is barber or admin -->
+                    <v-btn 
+                        v-if="['admin', 'barber'].includes(userRole)" 
+                        text color="blue" 
+                        @click="handleEditService(service)">
+                        Edit Service
+                    </v-btn>
+                    <!-- If user is not logged in -->
+                    <v-btn 
+                        v-else 
+                        text color="blue" 
+                        @click="handleBookNow(service)">
+                        Book Now!
+                    </v-btn>
+                    <v-card-actions class="justify-center">
+                    <!-- Existing buttons here -->
+                    <!-- Delete Service Button for Admin or Barber -->
+                    <v-btn 
+                        v-if="['admin', 'barber'].includes(userRole)" 
+                        text color="red" 
+                        @click="handleDeleteService(service)">
+                        Delete Service
+                    </v-btn>
+                </v-card-actions>
+
+                </v-card-actions>
                 </v-card>
             </v-col>
         </v-row>
@@ -24,6 +48,7 @@
 
 <script>
 import BookingModal from '@/components/BookingModal.vue';
+import { mapState } from 'vuex';
 
 export default {
     props: ['services'],
@@ -44,7 +69,23 @@ export default {
         handleDialogClosed() {
             this.dialogOpen = false;
         },
+        handleDeleteService(service) {
+        // handle the service deletion here
+        console.log(`Deleting service with id: ${service.id}`);
+        },
     },
+    watch: {
+        // Watch for changes to userRole and log them
+        userRole(newValue) {
+            console.log('userRole changed: ', newValue);
+        }
+    },
+    computed: {
+        ...mapState({
+        userRole: state => state.app.role,
+        }),
+    },
+
 };
 </script>
 
@@ -71,8 +112,8 @@ export default {
 
 .hmm {
     display: flex;
-
 }
+
 
 </style>
 
