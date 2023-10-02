@@ -1,83 +1,133 @@
 <template>
-  <v-container>
-    <v-row justify="space-around">
-      <v-card width="400">
-        <v-card-text>
-          <div class="font-weight-bold ms-1 mb-2">Today</div>
+  <v-card
+    max-width="400"
+    class="mx-auto"
+  >
+    <v-system-bar
+      color="pink darken-2"
+      dark
+    >
+      <v-spacer></v-spacer>
 
-          <v-calendar></v-calendar>
+      <v-icon>mdi-window-minimize</v-icon>
 
-          <v-timeline density="compact" align="start">
-            <v-timeline-item
-              v-for="message in messages"
-              :key="message.time"
-              :dot-color="message.color"
-              size="x-small"
-            >
-              <div class="mb-4">
-                <div class="font-weight-normal">
-                  <strong>{{ message.from }}</strong> @{{ message.time }}
-                </div>
-                <div>{{ message.message }}</div>
+      <v-icon>mdi-window-maximize</v-icon>
+
+      <v-icon>mdi-close</v-icon>
+    </v-system-bar>
+
+    <v-app-bar
+      dark
+      color="pink"
+    >
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+      <v-toolbar-title>My Music</v-toolbar-title>
+
+      <v-spacer></v-spacer>
+
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-container>
+      <v-row dense>
+        <v-col v-for="(item, i) in items" :key="i" cols="12">
+          <v-card
+            color="#385F73"
+            dark
+          >
+            <v-card-title class="text-h5">
+              Unlimited music now
+            </v-card-title>
+
+            <v-card-subtitle>Listen to your favorite artists and albums whenever and wherever, online and offline.</v-card-subtitle>
+
+            <v-card-actions>
+              <v-btn text>
+                Listen Now
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+
+        <v-col
+          v-for="(item, i) in items"
+          :key="i"
+          cols="12"
+        >
+          <v-card
+            :color="item.color"
+            dark
+          >
+            <div class="d-flex flex-no-wrap justify-space-between">
+              <div>
+                <v-card-title
+                  class="text-h5"
+                  v-text="item.title"
+                ></v-card-title>
+
+                <v-card-subtitle v-text="item.artist"></v-card-subtitle>
+
+                <v-card-actions>
+                  <v-btn
+                    v-if="item.artist === 'Ellie Goulding'"
+                    class="ml-2 mt-3"
+                    fab
+                    icon
+                    height="40px"
+                    right
+                    width="40px"
+                  >
+                    <v-icon>mdi-play</v-icon>
+                  </v-btn>
+
+                  <v-btn
+                    v-else
+                    class="ml-2 mt-5"
+                    outlined
+                    rounded
+                    small
+                  >
+                    START RADIO
+                  </v-btn>
+                </v-card-actions>
               </div>
-            </v-timeline-item>
-          </v-timeline>
-        </v-card-text>
-      </v-card>
-    </v-row>
-  </v-container>
+
+              <v-avatar
+                class="ma-3"
+                size="125"
+                tile
+              >
+                <v-img :src="item.src"></v-img>
+              </v-avatar>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
-export default {
-  name: 'NotificationsList',
-  data() {
-    return {
-      messages: [
+  export default {
+    name: 'NotificationsList',
+    data: () => ({
+      items: [
         {
-          from: 'You',
-          message: `Sure, I'll see you later.`,
-          time: '10:45am',
-          color: 'deep-purple-lighten-1',
+          color: '#1F7087',
+          src: 'https://cdn.vuetifyjs.com/images/cards/foster.jpg',
+          title: 'Supermodel',
+          artist: 'Foster the People',
         },
         {
-          from: 'John Doe',
-          message: 'Yeah, sure. Does 1:00pm work?',
-          time: '10:34am',
-          color: 'green',
-        },
-        {
-          from: 'You',
-          message: 'Did you still want to grab lunch today?',
-          time: '9:45am',
-          color: 'deep-purple-lighten-1',
-        },
-        {
-          from: 'You',
-          message: 'Did you still want to grab lunch today?',
-          time: '9:43am',
-          color: 'blue',
-        },
-        {
-          from: 'You',
-          message: 'Did you still want to grab lunch today?',
-          time: '9:46am',
-          color: 'deep-purple-lighten-1',
-        },
-        {
-          from: 'You',
-          message: 'Did you still want to grab lunch today?',
-          time: '9:41am',
-          color: 'green',
-        },
-        {
-          from: 'You',
-          message: 'Did you still want to grab lunch today?',
-          time: '9:49am',
-          color: 'deep-purple-lighten-1',
+          color: '#952175',
+          src: 'https://cdn.vuetifyjs.com/images/cards/halcyon.png',
+          title: 'Halcyon Days',
+          artist: 'Ellie Goulding',
         },
       ],
-    };
-  },
-};
+    }),
+  }
 </script>

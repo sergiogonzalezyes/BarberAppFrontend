@@ -1,12 +1,15 @@
 <template>
-    <div>
-        <ServicesLayout :services="services" :userRole="userRole"/>
+    <div class="parentdiv">
+        <ServicesLayout :services="services" :userRole="userRole" class="cards"/>
+        <v-divider class="my-5"></v-divider>
+        <FooterPartial />
     </div>
 </template>
 
 <script>
 import ServicesLayout from '@/components/ServicesLayout.vue';
 import { mapState } from 'vuex';
+import FooterPartial from '@/components/FooterPartial.vue';
 
 export default {
     data() {
@@ -41,6 +44,7 @@ export default {
     },
     components: {
         ServicesLayout,
+        FooterPartial,
     },
 
     mounted() {
@@ -52,3 +56,33 @@ export default {
     };
 </script>
   
+<style scoped>
+.parentdiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 0 1rem;
+}
+.cards {
+    max-width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    
+}
+
+@media (min-width: 1024px) {
+    .parentdiv {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+}
+
+
+</style>

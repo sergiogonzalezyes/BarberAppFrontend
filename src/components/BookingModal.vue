@@ -1,11 +1,18 @@
 <template>
-    <v-dialog v-model="localDialog" class="modal-size">
+    <v-dialog v-model="localDialog" class="mx-auto my-12">
         <v-card class="mx-auto my-12">
             <v-card-title>Booking: {{ service.name }}</v-card-title>
             <v-card-text>
                 <v-form ref="form" v-model="valid">
-                    <v-text-field label="Your Name" v-model="name" :rules="[v => !!v || 'Name is required']">
+                    <v-text-field label="First Name" v-model="first_name" :rules="[v => !!v || 'First Name is required']">
                     </v-text-field>
+                    <v-text-field label="Last Name" v-model="last_name" :rules="[v => !!v || 'Last Name is required']">
+                    </v-text-field>
+                    <v-text-field label="Email" v-model="email" :rules="[v => !!v || 'Email is required']">
+                    </v-text-field>
+                    <v-text-field label="Phone" v-model="phone" :rules="[v => !!v || 'Phone is required']">
+                    </v-text-field>
+
                     <v-select 
                         :items="availableBarbers" 
                         item-text="name" 
@@ -33,7 +40,10 @@ export default {
         return {
             localDialog: this.dialog,
             valid: false,
-            name: '',
+            first_name: '',
+            last_name: '',
+            email: '',
+            phone: '',
             selectedBarber: null,
             availableBarbers: [
                 { id: 1, name: 'Barber A' },
@@ -87,12 +97,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .modal-size {
-    display: flex;
-    width: 70%;
-    max-height: 50%;
-
+    width: 600px;
 }
 .date_picker {
     display: flex;

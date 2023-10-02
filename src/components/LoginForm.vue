@@ -65,11 +65,13 @@ export default {
 <!-- Updated CSS for the Cancel Link -->
 <style scoped>
 .divdiv {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  width: 80%; /* Adjust as necessary */
+  max-width: 400px; /* Adjust as necessary */
+  padding: 20px;
+  border: 1px solid #ccc; /* Adjust as necessary */
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Adjust as necessary */
+  border-radius: 8px; /* Adjust as necessary */
+  background-color: #ffffff; /* Adjust as necessary */
 }
 
 .cancel-container {

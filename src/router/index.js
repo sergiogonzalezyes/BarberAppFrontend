@@ -42,12 +42,31 @@ const routes = [
     name: 'Services',
     component: () => import('@/views/ServicesView.vue'),
   },
+  // // Settings Route
+  // {
+  //   path: '/settings',
+  //   name: 'Settings',
+  //   component: () => import('@/views/SettingsView.vue'),
+  //   meta: { requiresAuth: true, requiredRole: ['admin'] },
+  // },
+  // // Signup Route
+  // {
+  //   path: '/signup',
+  //   name: 'Signup',
+  //   component: () => import('@/views/SignupView.vue'),
+  // },
+  // // Error Route
+  // {
+  //   path: '/error',
+  //   name: 'Error',
+  //   component: () => import('@/views/ErrorView.vue'),
+  // },
   // test route
-  {
-    path: '/test',
-    name: 'Test',
-    component: () => import('@/views/ParentTest.vue'),
-  },
+  // {
+  //   path: '/test',
+  //   name: 'Test',
+  //   component: () => import('@/views/ParentTest.vue'),
+  // },
   // Fallback route redirects any unmatched routes to '/'
   {
     path: '/:pathMatch(.*)*',
