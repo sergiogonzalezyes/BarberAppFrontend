@@ -14,7 +14,6 @@
         color="transparent"
         class="mx-0"
         large
-        href="#"
         border-radius="20"
         @click="handleBookNow"
       >
@@ -27,7 +26,6 @@
         color="transparent"
         class="mx-0"
         large
-        href="#"
         border-radius="20"
         @click="handleBookNow"
       >
