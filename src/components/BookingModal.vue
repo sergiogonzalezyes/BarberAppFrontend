@@ -12,7 +12,6 @@
                     </v-text-field>
                     <v-text-field label="Phone" v-model="phone" :rules="[v => !!v || 'Phone is required']">
                     </v-text-field>
-
                     <v-select 
                         :items="availableBarbers" 
                         item-text="name" 
@@ -23,7 +22,6 @@
                     </v-select>
                     <v-date-picker v-model="date" label="Select a Date" :rules="[v => !!v || 'Date is required']" class="date_picker"></v-date-picker>
                     <v-time-picker v-model="time" label="Select a Time" :rules="[v => !!v || 'Time is required']" class="time_picker"></v-time-picker>
-                    <!-- Further Form Fields for Date and Time -->
                 </v-form>
             </v-card-text>
             <v-card-actions>
@@ -51,7 +49,6 @@ export default {
             ],
             date: null,
             time: null,
-            // ...rest of the data properties
         };
     },
     watch: {
@@ -90,7 +87,6 @@ export default {
             this.selectedBarber = null;
             this.date = null;
             this.time = null;
-            // Reset other state properties as needed
         },
 
     },

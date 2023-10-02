@@ -27,8 +27,7 @@
                         Book Now!
                     </v-btn>
                     <v-card-actions class="justify-center">
-                    <!-- Existing buttons here -->
-                    <!-- Delete Service Button for Admin or Barber -->
+                    <!-- If user is barber or admin -->
                     <v-btn 
                         v-if="['admin', 'barber'].includes(userRole)" 
                         text color="red" 

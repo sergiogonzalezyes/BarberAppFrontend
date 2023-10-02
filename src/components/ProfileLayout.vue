@@ -98,8 +98,5 @@ methods: {
 </script>
 
 <style scoped>
-.v-avatar img {
-max-width: 100%;
-max-height: 100%;
-}
+
 </style>
