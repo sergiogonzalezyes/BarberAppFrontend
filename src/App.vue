@@ -44,6 +44,13 @@
         @click="handleAddService">
         <v-icon>mdi-plus</v-icon>
     </v-btn>
+      <v-switch
+        v-model="$vuetify.theme.dark"
+        inset
+        label="Dark/Light"
+        persistent-hint
+        class="toggle-switch"
+      ></v-switch>
     </v-app-bar>
 
     <!-- Sidebar Navigation (Drawer) for Large Screens -->
@@ -144,5 +151,7 @@ export default {
 </script>
 
 <style scoped>
-
+.toggle-switch {
+  margin-top: 16px !important; /* Adding !important */
+}
 </style>
