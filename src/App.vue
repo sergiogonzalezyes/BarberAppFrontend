@@ -77,6 +77,7 @@ export default {
         { name: 'Schedule', path: '/schedule', requiresAuth: true, roles: ['admin', 'barber'] },
         { name: 'Services', path: '/services', requiresAuth: false },
         { name: 'Profile', path: '/profile', requiresAuth: true, roles: ['admin', 'customer', 'barber'] },
+        { name: 'Test', path: '/test'},
       ],
       isSmallScreen: false, // Initial state
     };

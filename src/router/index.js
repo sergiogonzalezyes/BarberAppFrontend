@@ -36,6 +36,18 @@ const routes = [
     component: () => import('@/views/ScheduleView.vue'),
     meta: { requiresAuth: true, requiredRole: ['admin', 'barber'] },
   },
+  // Services Route
+  {
+    path: '/services',
+    name: 'Services',
+    component: () => import('@/views/ServicesView.vue'),
+  },
+  // test route
+  {
+    path: '/test',
+    name: 'Test',
+    component: () => import('@/views/ParentTest.vue'),
+  },
   // Fallback route redirects any unmatched routes to '/'
   {
     path: '/:pathMatch(.*)*',
