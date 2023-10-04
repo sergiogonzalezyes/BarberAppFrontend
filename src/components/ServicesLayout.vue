@@ -15,26 +15,26 @@
                     <!-- If user is barber or admin -->
                     <v-btn 
                         v-if="['admin', 'barber'].includes(userRole)" 
-                        text color="blue" 
+                        :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
                         @click="handleEditService(service)">
                         Edit Service
+                        
                     </v-btn>
                     <!-- If user is not logged in -->
                     <v-btn 
+                        :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
                         v-else 
-                        text color="blue" 
-                        @click="handleBookNow(service)">
+                        @click="handleBookNow(service)"
+                        justify-center>
                         Book Now!
                     </v-btn>
-                    <v-card-actions class="justify-center">
                     <!-- If user is barber or admin -->
                     <v-btn 
                         v-if="['admin', 'barber'].includes(userRole)" 
-                        text color="red" 
+                        :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
                         @click="handleDeleteService(service)">
                         Delete Service
                     </v-btn>
-                </v-card-actions>
 
                 </v-card-actions>
                 </v-card>

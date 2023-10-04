@@ -11,7 +11,7 @@
     <v-divider class="my-5"></v-divider>
     <v-col align="center">
       <v-btn
-        color="transparent"
+        :color="$vuetify.theme.dark ? '#555555' : 'transparent'"
         class="mx-0"
         large
         border-radius="20"
@@ -23,7 +23,7 @@
     <v-divider class="my-5"></v-divider>
     <v-col align="center">
       <v-btn
-        color="transparent"
+        :color="$vuetify.theme.dark ? '#555555' : 'transparent'"
         class="mx-0"
         large
         border-radius="20"
@@ -62,6 +62,7 @@
 export default {
   data() {
     return {
+      name: 'HomeLayout',
       backgroundImage: require('@/assets/d_cutz_mobile.jpg'),
       photos: [
         {

@@ -34,7 +34,7 @@
           Hello, {{ username }}!
         </span>
         <!-- Optional: Default message for not logged in users -->
-        <span class="me-4" v-else>
+        <span class="me-4" v-else >
           Welcome!
         </span>
       </v-container>
@@ -90,6 +90,8 @@ export default {
         { name: 'Schedule', path: '/schedule', requiresAuth: true, roles: ['admin', 'barber'] },
         { name: 'Services', path: '/services', requiresAuth: false },
         { name: 'Profile', path: '/profile', requiresAuth: true, roles: ['admin', 'customer', 'barber'] },
+        { name: 'About', path: '/about' },
+        { name: 'Reviews', path: '/reviews'},
         // { name: 'Test', path: '/test'},
       ],
       isSmallScreen: false, // Initial state
@@ -98,6 +100,10 @@ export default {
   created() {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
+    // console log the resize 
+    console.log('Resize: ', this.isSmallScreen);
+    
+
   },
   destroyed() {
     window.removeEventListener('resize', this.handleResize);

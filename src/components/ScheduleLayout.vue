@@ -6,9 +6,8 @@
           flat
         >
           <v-btn
-            outlined
             class="mr-4"
-            color="grey darken-2"
+            :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
             @click="setToday"
           >
             Today
@@ -77,7 +76,7 @@
         <v-calendar
           ref="calendar"
           v-model="focus"
-          color="primary"
+          color="grey lighten-1"
           :events="events"
           :event-color="getEventColor"
           :type="type"

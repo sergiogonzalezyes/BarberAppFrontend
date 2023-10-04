@@ -20,7 +20,7 @@ const routes = [
     path: '/notifications',
     name: 'Notifications',
     component: () => import('@/views/NotificationsView.vue'),
-    meta: { requiresAuth: true, requiredRole: ['admin'] },
+    meta: { requiresAuth: true, requiredRole: ['admin', 'barber', 'customer'] },
   },
   // Profile Route
   {
@@ -41,6 +41,16 @@ const routes = [
     path: '/services',
     name: 'Services',
     component: () => import('@/views/ServicesView.vue'),
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: () => import('@/views/AboutView.vue'),
+  },
+  {
+    path: '/reviews',
+    name: 'Reviews',
+    component: () => import('@/views/ReviewsView.vue'),
   },
   // // Settings Route
   // {

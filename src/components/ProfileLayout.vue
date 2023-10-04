@@ -38,21 +38,21 @@
         </v-card-text>
         <v-card-actions class="justify-center">
             <v-btn
-            color="primary"
+            :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
             v-if="editing"
             @click="saveChanges"
             >
             Save
             </v-btn>
             <v-btn
-            color="red"
+            :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
             v-if="editing"
             @click="clearChanges"
             >
             Clear Changes
             </v-btn>
             <v-btn
-            color="blue darken-1"
+            :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
             v-else
             @click="editing = true"
             >

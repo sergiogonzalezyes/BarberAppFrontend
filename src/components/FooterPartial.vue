@@ -8,7 +8,7 @@
               v-for="icon in icons"
               :key="icon"
               class="mx-2"
-              light
+              :color="$vuetify.theme.dark ? 'white' : 'black'"
               icon
             >
               <v-icon size="24px">
@@ -17,7 +17,7 @@
             </v-btn>
           </div>
         </v-card-title>
-        <v-card-text class="py-2 black--text text-center">
+        <v-card-text class="py-2 text-center" :color="$vuetify.theme.dark ? 'white' : 'black'">
           {{ new Date().getFullYear() }} — <strong>D-Cutz</strong>
         </v-card-text>
       </v-card>
@@ -28,7 +28,7 @@
 export default {
     name: 'FooterPartial',
     data: () => ({
-        icons: ['mdi-facebook', 'mdi-twitter', 'mdi-linkedin', 'mdi-instagram'],
+        icons: ['mdi-facebook', 'mdi-instagram'],
     }),
 }
 </script>

@@ -1,13 +1,15 @@
 <template>
   <div class="divdiv">
     <form @submit.prevent="submitForm">
-      <v-text-field
+      <v-text-field 
+        class="textfield"
         v-model="username"
         label="Username"
         required
       ></v-text-field>
 
       <v-text-field
+        class="textfield"
         v-model="password"
         label="Password"
         type="password"
@@ -71,7 +73,6 @@ export default {
   border: 1px solid #ccc; /* Adjust as necessary */
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Adjust as necessary */
   border-radius: 8px; /* Adjust as necessary */
-  background-color: #ffffff; /* Adjust as necessary */
 }
 
 .cancel-container {
@@ -85,4 +86,11 @@ export default {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.textfield {
+  width: 100%;
+  margin-bottom: 20px;
+
+}
+
 </style>
