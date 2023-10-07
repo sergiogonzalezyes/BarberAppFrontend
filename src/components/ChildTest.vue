@@ -2,7 +2,7 @@
 <div>
     <h2>Child Component</h2>
     <button @click="openModal">Open Modal</button>
-    <test-modal v-if="isModalOpen" @close="closeModal"></test-modal>
+    <TestModal v-if="isModalOpen" @dirk="closeModal"/>
 </div>
 </template>
 

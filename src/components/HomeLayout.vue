@@ -111,8 +111,9 @@ export default {
 }
 
 .carousel-img {
+  height: 400px;
   object-fit: cover;
-  width: 100%;
+  width: 600px;
 }
 
 .carousel-title {
@@ -123,6 +124,22 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
+
+/* Media Queries for Larger Screens */
+@media (min-width: 960px) { /* This can be adjusted based on the breakpoint you want */
+  .carousel-img {
+    height: 600px;
+    width: 900px;
+  }
+
+  .background-image {
+    height: 70vh; /* Adjusting the height for larger screens */
+  }
+
+  .carousel-title {
+    margin-bottom: 520px; /* Adjusting the title position */
+  }
+}
+
 </style>

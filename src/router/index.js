@@ -72,11 +72,11 @@ const routes = [
   //   component: () => import('@/views/ErrorView.vue'),
   // },
   // test route
-  // {
-  //   path: '/test',
-  //   name: 'Test',
-  //   component: () => import('@/views/ParentTest.vue'),
-  // },
+  {
+    path: '/test',
+    name: 'Test',
+    component: () => import('@/views/ParentTest.vue'),
+  },
   // Fallback route redirects any unmatched routes to '/'
   {
     path: '/:pathMatch(.*)*',

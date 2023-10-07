@@ -92,7 +92,7 @@ export default {
         { name: 'Profile', path: '/profile', requiresAuth: true, roles: ['admin', 'customer', 'barber'] },
         { name: 'About', path: '/about' },
         { name: 'Reviews', path: '/reviews'},
-        // { name: 'Test', path: '/test'},
+        { name: 'Test', path: '/test'},
       ],
       isSmallScreen: false, // Initial state
     };

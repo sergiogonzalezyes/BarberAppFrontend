@@ -1,7 +1,7 @@
 <template>
 <div>
     <h1>Parent Component</h1>
-    <child-test></child-test>
+    <ChildTest />
 </div>
 </template>
 

@@ -3,7 +3,7 @@
     <div class="modal">
     <h3>Modal Component</h3>
     <p>This is a modal. Click the button below to close it.</p>
-    <button @click="$emit('close')">Close Modal</button>
+    <button @click="$emit('dirk')">Close Modal</button>
     </div>
 </div>
 </template>
