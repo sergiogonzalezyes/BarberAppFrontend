@@ -23,6 +23,11 @@
       <div class="cancel-container">
         <a @click="cancel" class="cancel-link">Cancel</a>
       </div>
+      <!-- Error message -->
+      
+    
+      <router-link to="/register" class="register-button">Register Here</router-link>
+    
     </form>
   </div>
 </template>
@@ -92,5 +97,18 @@ export default {
   margin-bottom: 20px;
 
 }
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.register-button {
+  margin-top: 20px;
+  text-align: center;
+  display: block;
+}
+
+
 
 </style>

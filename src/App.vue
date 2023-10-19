@@ -1,7 +1,7 @@
 <template>
   <v-app id="app">
     <!-- AppBar -->
-    <v-app-bar app flat v-if="!isLoginPage">
+    <v-app-bar app flat>
       <!-- Menu for Small Screens -->
       <v-menu offset-y v-if="isSmallScreen">
         <template v-slot:activator="{ on, attrs }">
@@ -54,7 +54,7 @@
     </v-app-bar>
 
     <!-- Sidebar Navigation (Drawer) for Large Screens -->
-    <v-navigation-drawer v-model="drawer" app v-if="!isSmallScreen && !isLoginPage">
+    <v-navigation-drawer v-model="drawer" app v-if="!isSmallScreen">
       <v-list :rounded="true">
         <!-- Dynamic links -->
         <router-link v-for="link in filteredLinks" :key="link.name" :to="link.path">
@@ -139,9 +139,6 @@ export default {
     },
     username() {
       return this.$store.state.app.username;
-    },
-    isLoginPage() {
-      return this.$route.path === '/login';
     },
     // Compute the links to be shown based on authentication and role
     filteredLinks() {
