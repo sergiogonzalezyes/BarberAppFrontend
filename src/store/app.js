@@ -85,7 +85,7 @@ export default {
 
           const logoutTimer = setTimeout(() => {
             dispatch('logout');
-          }, 2 * 60 * 1000);
+          }, 5 * 60 * 1000);
 
           commit('setLogoutTimer', logoutTimer);
         } else {
