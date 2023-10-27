@@ -1,44 +1,42 @@
 <template>
     <div class="parentdiv">
         <v-row>
-            <v-col v-for="service in services" :key="service.id" cols="12" sm="6" md="4">
-                <v-card class="cards">
-                    <v-img :src="`/${service.image}`" aspect-ratio="2.75" alt="Service Image"></v-img>
-                    <v-card-title class="hm1">
-                        <h2 class="hmm">{{ service.name }}</h2>
-                    </v-card-title>
-                    <v-card-text class="text-center">
-                        <p>{{ service.description }}</p>
-                        <p>${{ service.price }}</p>
-                    </v-card-text>
-                    <v-card-actions class="justify-center">
-                    <!-- If user is barber or admin -->
-                    <v-btn 
-                        v-if="['admin', 'barber'].includes(userRole)" 
-                        :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
-                        @click="handleEditService(service)">
-                        Edit Service
-                        
-                    </v-btn>
-                    <!-- If user is not logged in -->
-                    <v-btn 
-                        :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
-                        v-else 
-                        @click="handleBookNow(service)"
-                        justify-center>
-                        Book Now!
-                    </v-btn>
-                    <!-- If user is barber or admin -->
-                    <v-btn 
-                        v-if="['admin', 'barber'].includes(userRole)" 
-                        :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
-                        @click="handleDeleteService(service)">
-                        Delete Service
-                    </v-btn>
-
-                </v-card-actions>
-                </v-card>
-            </v-col>
+        <v-col v-for="service in services" :key="service.Service_ID" cols="12" sm="6" md="4">
+            <v-card class="cards">
+            <v-img :src="`/${service.image}`" aspect-ratio="2.75" alt="Service Image"></v-img>
+            <v-card-title class="hm1">
+                <h2 class="hmm">{{ service.Service_Name }}</h2>
+            </v-card-title>
+            <v-card-text class="text-center">
+                <p>{{ service.Service_Description }}</p>
+                <p>${{ service.Service_Price }}</p>
+            </v-card-text>
+            <v-card-actions class="justify-center">
+                <!-- If user is barber or admin -->
+                <v-btn 
+                v-if="['admin', 'barber'].includes(userRole)" 
+                :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
+                @click="handleEditService(service)">
+                Edit Service
+                </v-btn>
+                <!-- If user is not logged in -->
+                <v-btn 
+                :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
+                v-else 
+                @click="handleBookNow(service)"
+                justify-center>
+                Book Now!
+                </v-btn>
+                <!-- If user is barber or admin -->
+                <v-btn 
+                v-if="['admin', 'barber'].includes(userRole)" 
+                :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
+                @click="handleDeleteService(service)">
+                Delete Service
+                </v-btn>
+            </v-card-actions>
+            </v-card>
+        </v-col>
         </v-row>
         <BookingModal v-if="dialogOpen" :service="selectedService" :dialog.sync="dialogOpen" @dialog-closed="handleDialogClosed" />
     </div>

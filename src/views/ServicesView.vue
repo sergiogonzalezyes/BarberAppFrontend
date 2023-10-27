@@ -7,6 +7,8 @@
 </template>
 
 <script>
+/* eslint-disable no-unused-vars */
+import axios from 'axios';
 import ServicesLayout from '@/components/ServicesLayout.vue';
 import { mapState } from 'vuex';
 import FooterPartial from '@/components/FooterPartial.vue';
@@ -14,34 +16,50 @@ import FooterPartial from '@/components/FooterPartial.vue';
 export default {
     data() {
         return {
-        services: [
-            // Initially empty, to be filled with fetched services
-            ],
+        services:[],
         };
     },
     computed: {
         ...mapState({
         userRole: state => state.app.role,
+        userId: state => state.app.user_id,
         }),
     },
+    // fetch services if the user is not logged in and there is no recognized userRole or UserId
     methods: {
-        fetchServices() {
-        // Simulated fetch, replace with actual API call later
-        this.services = [
-            { id: 1, name: 'Haircut', description: 'A standard haircut.', price: 20, image: 'sample1.png' },
-            { id: 2, name: 'Beard trim', description: 'A standard beard trim.', price: 10, image: 'sample3.png' },
-            { id: 3, name: 'Cut & beard trim', description: 'A standard haircut and beard trim.', price: 25, image: 'sample2.png' },
-            { id: 4, name: 'Head shave', description: 'A standard head shave.', price: 15, image: 'sample2.png' },
-            { id: 5, name: 'Cut, Beard trim, Eyebrows', description: 'A standard haircut, beard trim, and eyebrow shaping.', price: 25, image: 'sample3.png' },
-            { id: 6, name: 'Cut, Beard trim, Eyebrows, Shave', description: 'A standard haircut, beard trim, eyebrow shaping, and shave.', price: 30, image: 'sample1.png'}
-        ];
-        },
+  // fetch services if user is not logged in and there is no recognized userRole or UserId
+  fetchServicesForNonLoggedInUser() {
+  axios.get('http://localhost:5001/services')
+    .then((response) => {
+      const servicesData = response.data.services;
+      // Manually add image paths to each service based on naming convention
+      const servicesWithImages = servicesData.map((service, index) => {
+        const imageNumber = (index % 3) + 1; // Cycles through 1, 2, 3
+        return {
+          ...service,
+          image: `sample${imageNumber}.png`, // Adjust the path accordingly
+        };
+      });
+
+      this.services = servicesWithImages;
+      console.log(this.services);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+},
+
+
+
+
+
+
     },
     created() {
-        console.log('BookingModal created');
-        this.fetchServices();
-        console.log('userrole in parent component:', this.userRole)
-    },
+    // Call the function for non-logged-in users or other roles
+    this.fetchServicesForNonLoggedInUser();
+},
+
     components: {
         ServicesLayout,
         FooterPartial,

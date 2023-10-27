@@ -41,8 +41,12 @@ export default {
     setPhoneNumber(state, phoneNumber) {
       state.phoneNumber = phoneNumber;
     },
+    setUserId(state, user_id) {
+      state.user_id = user_id;
+    },
     // Add a mutation to update all user data at once
     setUserData(state, userData) {
+      state.user_id = userData.user_id;
       state.firstName = userData.firstName;
       state.lastName = userData.lastName;
       state.email = userData.email;
@@ -60,15 +64,18 @@ export default {
           commit('setAuthenticated', true);
           commit('setUsername', user.username);
           commit('setRole', user.role);
+          commit('setUserId', user.user_id);
           commit('setUserData', { // Use the new mutation to update all user data at once
             firstName: user.first_name,
             lastName: user.last_name,
             email: user.email,
             phoneNumber: user.phone,
+            user_id: user.user_id,
           });
           
 
           localStorage.setItem('userIsAuthenticated', 'true');
+          localStorage.setItem('userID', user.user_id);
           localStorage.setItem('userRole', user.role);
           localStorage.setItem('username', user.username);
           // Set additional user information in local storage
@@ -99,8 +106,10 @@ export default {
       commit('setAuthenticated', false);
       commit('setUsername', '');
       commit('setRole', '');
+      commit('setUserId', '');
       // Clear additional user information from local storage
       localStorage.removeItem('userIsAuthenticated');
+      localStorage.removeItem('userId');
       localStorage.removeItem('userRole');
       localStorage.removeItem('username');
       localStorage.removeItem('userFirstName');
@@ -147,6 +156,5 @@ export default {
         return false; // Indicate failure
       }
     },
-    
   },
 };
