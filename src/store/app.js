@@ -107,9 +107,16 @@ export default {
       commit('setUsername', '');
       commit('setRole', '');
       commit('setUserId', '');
+      commit('setUserData', { // Use the new mutation to update all user data at once
+        firstName: '',
+        lastName: '',
+        email: '',
+        phoneNumber: '',
+        user_id: '',
+      });
       // Clear additional user information from local storage
       localStorage.removeItem('userIsAuthenticated');
-      localStorage.removeItem('userId');
+      localStorage.removeItem('userID');
       localStorage.removeItem('userRole');
       localStorage.removeItem('username');
       localStorage.removeItem('userFirstName');

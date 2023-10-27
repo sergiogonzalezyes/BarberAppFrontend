@@ -4,10 +4,12 @@
     <v-card-title>Booking: {{ service.name }}</v-card-title>
     <v-card-text>
         <v-form ref="form" v-model="valid">
-        <v-text-field label="First Name" v-model="first_name" :rules="[v => !!v || 'First Name is required']"></v-text-field>
-        <v-text-field label="Last Name" v-model="last_name" :rules="[v => !!v || 'Last Name is required']"></v-text-field>
-        <v-text-field label="Email" v-model="email" :rules="[v => !!v || 'Email is required']"></v-text-field>
-        <v-text-field label="Phone" v-model="phone" :rules="[v => !!v || 'Phone is required']"></v-text-field>
+            <v-text-field label="First Name" v-model="user_info.first_name" :rules="[v => !!v || 'First Name is required']"></v-text-field>
+            <v-text-field label="Last Name" v-model="user_info.last_name" :rules="[v => !!v || 'Last Name is required']"></v-text-field>
+            <v-text-field label="Email" v-model="user_info.email" :rules="[v => !!v || 'Email is required']"></v-text-field>
+            <v-text-field label="Phone" v-model="user_info.phone" :rules="[v => !!v || 'Phone is required']"></v-text-field>
+
+
         <v-select
             :items="availableBarbersOptions"
             item-text="name"
@@ -155,23 +157,56 @@ export default {
       }
     },
     resetState() {
-      this.valid = false;
-      this.first_name = '';
-      this.last_name = '';
-      this.email = '';
-      this.phone = '';
-      this.selectedBarber = null;
-      this.availableDates = [];
-      this.availableTimeSlots = {};
-      this.selectedDateFormatted = null;
-      this.selectedTimeSlot = null;
-    },
+  this.valid = false;
+  this.first_name = '';
+  this.last_name = '';
+  this.email = '';
+  this.phone = '';
+  this.selectedBarber = null;
+  this.availableDates = [];
+  this.availableTimeSlots = {};
+  this.selectedDateFormatted = null;
+  this.selectedTimeSlot = null;
+  
+  // Clear user_info
+  this.user_info = {
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+  };
+}
+
   },
   created() {
-    if (this.service) {
-      this.fetchBarbersAndTimeSlots(this.service.Service_ID);
-    }
+    // Keep a copy of the initial user data to reset changes if needed
+    this.initialUser = { ...this.user };
+
+    // Access the user data from your Vuex store and populate the user object
+    this.user = {
+    ...this.user,
+    first_name: this.$store.state.app.firstName,
+    last_name: this.$store.state.app.lastName,
+    email: this.$store.state.app.email,
+    phone: this.$store.state.app.phoneNumber,
+    };
+    console.log('User data:', this.user);
+
+  if (this.service) {
+    this.fetchBarbersAndTimeSlots(this.service.Service_ID);
+  }
+  
+},
+computed: {
+  user_info() {
+    return {
+      first_name: this.$store.state.app.firstName,
+      last_name: this.$store.state.app.lastName,
+      email: this.$store.state.app.email,
+      phone: this.$store.state.app.phoneNumber,
+    };
   },
+},
 };
 </script>
 
