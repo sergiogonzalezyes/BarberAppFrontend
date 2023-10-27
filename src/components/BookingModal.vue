@@ -1,58 +1,78 @@
 <template>
-    <v-dialog v-model="localDialog" class="mx-auto">
-        <v-card class="mx-auto">
-            <v-card-title>Booking: {{ service.name }}</v-card-title>
-            <v-card-text>
-                <v-form ref="form" v-model="valid">
-                    <v-text-field label="First Name" v-model="first_name" :rules="[v => !!v || 'First Name is required']">
-                    </v-text-field>
-                    <v-text-field label="Last Name" v-model="last_name" :rules="[v => !!v || 'Last Name is required']">
-                    </v-text-field>
-                    <v-text-field label="Email" v-model="email" :rules="[v => !!v || 'Email is required']">
-                    </v-text-field>
-                    <v-text-field label="Phone" v-model="phone" :rules="[v => !!v || 'Phone is required']">
-                    </v-text-field>
-                    <v-select 
-                        :items="availableBarbers" 
-                        item-text="name" 
-                        item-value="id" 
-                        v-model="selectedBarber"
-                        label="Select a Barber"
-                        :rules="[v => !!v || 'Barber is required']">
-                    </v-select>
-                    <v-date-picker v-model="date" label="Select a Date" :rules="[v => !!v || 'Date is required']" class="date_picker"></v-date-picker>
-                    <v-time-picker v-model="time" label="Select a Time" :rules="[v => !!v || 'Time is required']" class="time_picker"></v-time-picker>
-                </v-form>
-            </v-card-text>
-            <v-card-actions>
-                <v-btn color="orange" text @click="submitForm" class="submit_booking" >Submit Booking</v-btn>
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
+<v-dialog v-model="localDialog" class="mx-auto">
+    <v-card class="mx-auto">
+    <v-card-title>Booking: {{ service.name }}</v-card-title>
+    <v-card-text>
+        <v-form ref="form" v-model="valid">
+        <v-text-field label="First Name" v-model="first_name" :rules="[v => !!v || 'First Name is required']"></v-text-field>
+        <v-text-field label="Last Name" v-model="last_name" :rules="[v => !!v || 'Last Name is required']"></v-text-field>
+        <v-text-field label="Email" v-model="email" :rules="[v => !!v || 'Email is required']"></v-text-field>
+        <v-text-field label="Phone" v-model="phone" :rules="[v => !!v || 'Phone is required']"></v-text-field>
+        <v-select
+            :items="availableBarbersOptions"
+            item-text="name"
+            item-value="id"
+            v-model="selectedBarber"
+            label="Select a Barber"
+            @input="onBarberSelected"
+        ></v-select>
+
+
+        <!-- Date Selection Section -->
+        <v-select
+            v-model="selectedDateFormatted"
+            label="Select a Date"
+            :items="availableDates"
+            :rules="[v => !!v || 'Date is required']"
+            :disabled="!selectedBarber"
+            @input="onDateSelected"
+        ></v-select>
+
+        <!-- Time Selection Section -->
+        <v-select
+        :items="availableTimeSlots"
+        item-text="start_time"
+        item-value="slotNumber"
+        v-model="selectedTimeSlot"
+        label="Select a Time"
+        :rules="[v => !!v || 'Time is required']"
+        :disabled="!selectedDateFormatted"
+        ></v-select>
+
+
+
+        </v-form>
+    </v-card-text>
+    <v-card-actions>
+        <v-btn color="orange" text @click="submitForm" class="submit_booking" :disabled="!selectedTimeSlot">Submit Booking</v-btn>
+    </v-card-actions>
+    </v-card>
+</v-dialog>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-    props: ['service', 'dialog'],
-    data() {
-        return {
-            localDialog: this.dialog,
-            valid: false,
-            first_name: '',
-            last_name: '',
-            email: '',
-            phone: '',
-            selectedBarber: null,
-            availableBarbers: [
-                { id: 1, name: 'Barber A' },
-                { id: 2, name: 'Barber B' },
-            ],
-            date: null,
-            time: null,
-        };
-    },
-    watch: {
-        dialog(newVal) {
+  props: ['service', 'dialog'],
+  data() {
+    return {
+      localDialog: this.dialog,
+      valid: false,
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      selectedBarber: null,
+      availableBarbersOptions: [],
+      availableDates: [],
+      availableTimeSlots: [],
+      selectedDateFormatted: null,
+      selectedTimeSlot: null,
+    };
+  },
+  watch: {
+    dialog(newVal) {
             console.log('Dialog value changed:', newVal);
             if (!newVal) {
                 this.resetState();
@@ -67,49 +87,111 @@ export default {
                 this.resetState();
             }
         },
+    service: {
+      handler(newService) {
+        if (newService) {
+          this.fetchBarbersAndTimeSlots(newService.Service_ID);
+        }
+      },
+      deep: true,
     },
-    methods: {
-        closeDialog() {
-            this.localDialog = false;
-            this.$emit('dialog-closed');
-        },
-        submitForm() {
-            if (this.$refs.form.validate()) {
-                // Process the booking
-                alert(`Booking Successful for ${this.name} with Barber ID: ${this.selectedBarber} on ${this.date} at ${this.time}`);
-                this.closeDialog();
-            }
-        },
-        resetState() {
-            console.log('Resetting state...');
-            this.valid = false;
-            this.name = '';
-            this.selectedBarber = null;
-            this.date = null;
-            this.time = null;
+  },
+  methods: {
+    async fetchBarbersAndTimeSlots(serviceId) {
+      try {
+        const response = await axios.get(`http://localhost:5001/service/${serviceId}/availability`);
+        const data = response.data;
+
+        this.availableBarbersOptions = data.map(barber => ({
+          id: barber.barber_id,
+          name: barber.barber_name,
+        }));
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+    async fetchAvailableDatesForBarber(barber_id) {
+      try {
+        const response = await axios.get(`http://localhost:5001/schedule/${barber_id}/available-dates`);
+        const data = response.data;
+
+        this.availableDates = data.available_dates;
+      } catch (error) {
+        console.error('Error fetching available dates:', error);
+      }
+    },
+    async fetchAvailableTimeSlotsForDate() {
+        try {
+            const response = await axios.get(`http://localhost:5001/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
+            const data = response.data;
+
+            // Convert the object to an array of time slot objects
+            this.availableTimeSlots = Object.keys(data.available_time_slots).map(slotNumber => {
+                return {
+                    slotNumber: parseInt(slotNumber),
+                    ...data.available_time_slots[slotNumber]
+                };
+            });
+        } catch (error) {
+            console.error('Error fetching available time slots:', error);
+        }
         },
 
+    onBarberSelected() {
+      this.fetchAvailableDatesForBarber(this.selectedBarber);
     },
+    onDateSelected() {
+      this.fetchAvailableTimeSlotsForDate();
+    },
+    closeDialog() {
+      this.localDialog = false;
+      this.$emit('dialog-closed');
+    },
+    submitForm() {
+      if (this.$refs.form.validate()) {
+        // Process the booking with selectedDate and selectedTimeSlot
+        alert(`Booking Successful for ${this.name} with Barber ID: ${this.selectedBarber} on ${this.selectedDateFormatted} at ${this.selectedTimeSlot.start_time}-${this.selectedTimeSlot.end_time}`);
+        this.closeDialog();
+      }
+    },
+    resetState() {
+      this.valid = false;
+      this.first_name = '';
+      this.last_name = '';
+      this.email = '';
+      this.phone = '';
+      this.selectedBarber = null;
+      this.availableDates = [];
+      this.availableTimeSlots = {};
+      this.selectedDateFormatted = null;
+      this.selectedTimeSlot = null;
+    },
+  },
+  created() {
+    if (this.service) {
+      this.fetchBarbersAndTimeSlots(this.service.Service_ID);
+    }
+  },
 };
 </script>
 
+    
+
 <style>
 .modal-size {
-    width: 600px;
+width: 600px;
 }
 .date_picker {
-    display: flex;
+display: flex;
 }
-
 .time_picker {
-    display: flex;
+display: flex;
 }
-
 .submit_booking {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
+display: flex;
+justify-content: center;
+align-items: center;
+margin: 0 auto;
 }
-
 </style>
+  
