@@ -126,6 +126,7 @@ export default {
         try {
             const response = await axios.get(`http://localhost:5001/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
             const data = response.data;
+            console.log('Available time slots:', data);
 
             // Convert the object to an array of time slot objects
             this.availableTimeSlots = Object.keys(data.available_time_slots).map(slotNumber => {
@@ -150,12 +151,53 @@ export default {
       this.$emit('dialog-closed');
     },
     submitForm() {
-      if (this.$refs.form.validate()) {
-        // Process the booking with selectedDate and selectedTimeSlot
-        alert(`Booking Successful for ${this.name} with Barber ID: ${this.selectedBarber} on ${this.selectedDateFormatted} at ${this.selectedTimeSlot.start_time}-${this.selectedTimeSlot.end_time}`);
+  if (this.$refs.form.validate()) {
+    // Use the selected time slot's ID to retrieve start and end times
+    const selectedTimeSlotId = this.selectedTimeSlot;
+    const selectedTimeSlot = this.availableTimeSlots.find(slot => slot.slotNumber === selectedTimeSlotId);
+
+    if (!selectedTimeSlot) {
+      // Handle error when selectedTimeSlot is not found
+      console.error('Selected time slot not found');
+      alert('Booking failed. Please try again later.');
+      return;
+    }
+
+    const { start_time, end_time } = selectedTimeSlot;
+
+    const bookingData = {
+      first_name: this.user_info.first_name,
+      last_name: this.user_info.last_name,
+      email: this.user_info.email,
+      phone: this.user_info.phone,
+      barber_id: this.selectedBarber,
+      date: this.selectedDateFormatted,
+      start_time, // Include start_time in the bookingData
+      end_time,   // Include end_time in the bookingData
+      // Include the service id in the bookingData
+      service_id: this.service.Service_ID,
+    };
+
+    console.log('Booking data:', bookingData);
+
+    // Make an Axios POST request to send bookingData to your backend
+    axios
+      .post('http://localhost:5001/bookings', bookingData)
+      .then(() => {
+        // Handle success
+        alert('Booking Successful!');
         this.closeDialog();
-      }
-    },
+      })
+      .catch(error => {
+        // Handle error
+        console.error('Error submitting booking:', error);
+        alert('Booking failed. Please try again later.');
+      });
+  }
+},
+
+
+
     resetState() {
   this.valid = false;
   this.first_name = '';

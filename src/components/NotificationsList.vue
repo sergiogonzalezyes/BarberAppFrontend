@@ -10,9 +10,10 @@
 
     <v-list>
       <v-list-item-group v-if="items.length">
-        <v-list-item v-for="(item, i) in items" :key="i">
-          <v-list-item-content>
+        <v-list-item v-for="(item, i) in items" :key="i" :class="{ 'unread-message': item.status === 'Unread' }">
+          <v-list-item-content @click="handleNotificationOpen(item)">
             <v-list-item-title v-text="item.title"></v-list-item-title>
+            <v-list-item-subtitle>{{ item.created_at }}</v-list-item-subtitle>
             <v-list-item-subtitle v-text="item.content"></v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-action>
@@ -29,54 +30,106 @@
         <span>No notifications</span>
       </v-container>
     </v-list>
+      <!-- Notification modal -->
+  <NotificationModal
+    v-if="dialogOpen" :notification="selectedNotification" :dialog.sync="dialogOpen" @dialog-closed="handleDialogClosed"
+  />
   </v-card>
 </template>
 
 <script>
-export default {
-  name: 'NotificationsList',
-  data: () => ({
-  items: [
-    {
-      title: 'New Appointment Scheduled',
-      content: 'John Doe has scheduled an appointment with you for a haircut on Oct 10, 2023, at 10:00 AM.',
-      isRead: false,
-    },
-    {
-      title: 'New Appointment Scheduled',
-      content: 'Jane Smith has booked a beard trim session with you for Oct 12, 2023, at 2:30 PM.',
-      isRead: false,
-    },
-    {
-      title: 'New Appointment Scheduled',
-      content: 'Alex Brown wants a buzz cut on Oct 15, 2023, at 11:45 AM. Confirm this in your bookings.',
-      isRead: false,
-    },
-    {
-      title: 'Appointment Canceled',
-      content: 'Michael Johnson has canceled his hair coloring appointment scheduled for Oct 16, 2023, at 3:00 PM. Open slot available.',
-      isRead: false,
-    },
-  ],
-}),
+import axios from 'axios';
+import NotificationModal from '@/components/NotificationModal.vue';
 
-  methods: {
-    markAsRead(index) {
-      this.items[index].isRead = true;
+export default {
+    name: 'NotificationsList',
+    components: {
+      NotificationModal,
     },
-    markAllAsRead() {
-      this.items.forEach(item => (item.isRead = true));
+    data: () => ({
+      items: [],
+      user_id: null,
+      selectedNotification: null,
+      dialogOpen: false,
+    }),
+
+    methods: {
+      handleNotificationOpen(notification) {
+            this.selectedNotification = notification;
+            this.dialogOpen = true;
+        },
+        handleDialogClosed() {
+            this.dialogOpen = false;
+        },
+      async fetchNotifications() {
+        try {
+          // Fetch the user ID directly from the store
+          this.user_id = localStorage.getItem('userID'); // Retrieve user_id from localStorage
+
+          // Fetch notifications using the user ID
+          const response = await axios.get(`http://localhost:5001/notifications/${this.user_id}`);
+          this.items = response.data.notifications;
+
+          console.log('Notifications:', this.items);
+        } catch (error) {
+          console.error('Error fetching notifications:', error);
+        }
+      },
+      formatDateTime(dateTimeString) {
+        const dateTime = new Date(dateTimeString);
+        return dateTime.toLocaleString(); // You can adjust the format as needed
+      },
+
+      async markAsRead(index) {
+        const notificationId = this.items[index].id;
+        console.log('Marking notification as read:', notificationId)
+        try {
+          // Make an API call to mark the notification as read
+          const response = await axios.put(`http://localhost:5001/mark-as-read/${notificationId}`);
+          if (response.data.success) {
+            // Update the status locally
+            this.items[index].Notification_Status = 'Read';
+          }
+        } catch (error) {
+          console.error('Error marking notification as read:', error);
+        }
+      },
+      async markAllAsRead() {
+        const notificationIds = this.items.map(item => item.id); // Extract all notification IDs
+        console.log('Marking all notifications as read:', notificationIds);
+        try {
+          // Make an API call to mark all notifications as read
+          const response = await axios.put('http://localhost:5001/mark-all-as-read', {
+            notificationIds: notificationIds,
+          });
+          if (response.data.success) {
+            // Update the status locally for all notifications
+            this.items.forEach(item => (item.status = 'Read'));
+          }
+        } catch (error) {
+          console.error('Error marking all notifications as read:', error);
+        }
+      },
+      deleteNotification(index) {
+        this.items.splice(index, 1);
+      },
+      deleteAllNotifications() {
+        this.items = [];
+      },
     },
-    deleteNotification(index) {
-      this.items.splice(index, 1);
+    mounted() {
+      // Move this.user_id assignment to the beginning of the mounted hook
+      this.user_id = localStorage.getItem('userID'); // Retrieve user_id from localStorage
+      this.fetchNotifications();
     },
-    deleteAllNotifications() {
-      this.items = [];
-    },
-  },
-};
+  };
 </script>
 
 <style scoped>
-/* You can add any additional styling here */
+
+.unread-message {
+  /* Add styles for "Unread" messages */
+  /* For example, you can change the background color or add a border to make them stand out */
+  background-color: hsla(120, 60%, 70%, 0.3); /* Change the background color as desired */
+}
 </style>
