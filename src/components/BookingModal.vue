@@ -65,6 +65,7 @@ export default {
       last_name: '',
       email: '',
       phone: '',
+      user_id: '',
       selectedBarber: null,
       availableBarbersOptions: [],
       availableDates: [],
@@ -155,6 +156,7 @@ export default {
     // Use the selected time slot's ID to retrieve start and end times
     const selectedTimeSlotId = this.selectedTimeSlot;
     const selectedTimeSlot = this.availableTimeSlots.find(slot => slot.slotNumber === selectedTimeSlotId);
+    const customer_id = localStorage.getItem('userID'); // Retrieve user_id from localStorage
 
     if (!selectedTimeSlot) {
       // Handle error when selectedTimeSlot is not found
@@ -176,6 +178,7 @@ export default {
       end_time,   // Include end_time in the bookingData
       // Include the service id in the bookingData
       service_id: this.service.Service_ID,
+      customer_id: customer_id
     };
 
     console.log('Booking data:', bookingData);
@@ -220,25 +223,24 @@ export default {
 }
 
   },
-  created() {
-    // Keep a copy of the initial user data to reset changes if needed
-    this.initialUser = { ...this.user };
+created() {
+  // Keep a copy of the initial user data to reset changes if needed
+  this.initialUser = { ...this.user };
 
-    // Access the user data from your Vuex store and populate the user object
-    this.user = {
-    ...this.user,
+  // Populate the user_info object from the Vuex store
+  this.user_info = {
     first_name: this.$store.state.app.firstName,
     last_name: this.$store.state.app.lastName,
     email: this.$store.state.app.email,
     phone: this.$store.state.app.phoneNumber,
-    };
-    console.log('User data:', this.user);
+  };
+  console.log('User data:', this.user_info);
 
   if (this.service) {
     this.fetchBarbersAndTimeSlots(this.service.Service_ID);
   }
-  
 },
+
 computed: {
   user_info() {
     return {

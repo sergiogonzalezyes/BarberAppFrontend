@@ -20,7 +20,7 @@ const routes = [
     path: '/notifications',
     name: 'Notifications',
     component: () => import('@/views/NotificationsView.vue'),
-    meta: { requiresAuth: true, requiredRole: ['admin', 'barber', 'customer'] },
+    meta: { requiresAuth: true, requiredRole: ['admin', 'barber'] },
   },
   // Profile Route
   {

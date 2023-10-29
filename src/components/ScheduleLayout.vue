@@ -114,7 +114,27 @@
               </v-btn>
             </v-toolbar>
             <v-card-text>
-              <span v-html="selectedEvent.details"></span>
+              <!-- Display appointment details here -->
+              <div v-if="selectedEvent.id">
+                <p>Appointment Date and Time: {{ selectedEvent.appointment_date_time }}</p>
+                <p>Status: {{ selectedEvent.status }}</p>
+                <p>Customer:</p>
+                <ul>
+                  <li>Customer User ID: {{ selectedEvent.customer.customer_user_id }}</li>
+                  <li>Email: {{ selectedEvent.customer.email }}</li>
+                  <li>First Name: {{ selectedEvent.customer.first_name }}</li>
+                  <li>Last Name: {{ selectedEvent.customer.last_name }}</li>
+                  <li>Phone Number: {{ selectedEvent.customer.phone_number }}</li>
+                </ul>
+                <p>Service:</p>
+                <ul>
+                  <li>Service ID: {{ selectedEvent.service.service_id }}</li>
+                  <li>Service Name: {{ selectedEvent.service.service_name }}</li>
+                  <li>Service Description: {{ selectedEvent.service.service_description }}</li>
+                  <li>Service Price: {{ selectedEvent.service.service_price }}</li>
+                  <li>Service Duration: {{ selectedEvent.service.service_duration }}</li>
+                </ul>
+              </div>
             </v-card-text>
             <v-card-actions>
               <v-btn
@@ -134,6 +154,8 @@
 
 
 <script>
+import axios from 'axios';
+
 export default {
   data: () => ({
     focus: '',
@@ -143,16 +165,23 @@ export default {
       week: 'Week',
       day: 'Day',
       '4day': '4 Days',
+
     },
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
-    events: [],
     colors: ['#add8e6', '#ffb6c1', '#98fb98', '#fffacd', '#deb887', '#f0e68c', '#d8bfd8'], // slightly less pastel colors
 
     names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
+    events: [],
+    user_id: null,
   }),
   mounted () {
+    // Get user_id from localstorage
+    this.user_id = localStorage.getItem('userID');
+    console.log('User ID:', this.user_id)
+    // Fetch user-specific appointments when the component is mounted
+    this.fetchAppointments();
     this.type = 'day'; // set the default view to daily
     // focus on today's date from 4pm to 11pm (hardcoded)
     this.focus = new Date(new Date().setHours(16, 0, 0, 0));
@@ -161,6 +190,19 @@ export default {
   this.$refs.calendar.checkChange();
   },
   methods: {
+    async fetchAppointments() {
+      try {
+        const response = await axios.get(`http://localhost:5001/appointmentsforbarber/${this.user_id}`, {
+    });
+    this.events = response.data.appointments;
+    console.log('Appointments:', this.events);
+    }
+     catch (error) {
+      console.error('Error fetching appointments:', error);
+      
+    }
+  },
+  
     viewDay ({ date }) {
       this.focus = date
       this.type = 'day'
@@ -231,5 +273,6 @@ export default {
       return Math.floor((b - a + 1) * Math.random()) + a
     },
   },
+
 }
 </script>

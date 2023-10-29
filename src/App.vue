@@ -86,7 +86,7 @@ export default {
       drawer: false,
       links: [
         { name: 'Home', path: '/home' },
-        { name: 'Notifications', path: '/notifications', requiresAuth: true , roles: ['admin', 'customer', 'barber'] },
+        { name: 'Notifications', path: '/notifications', requiresAuth: true , roles: ['admin', 'barber'] },
         { name: 'Schedule', path: '/schedule', requiresAuth: true, roles: ['admin', 'barber'] },
         { name: 'Services', path: '/services', requiresAuth: false },
         { name: 'Profile', path: '/profile', requiresAuth: true, roles: ['admin', 'customer', 'barber'] },
