@@ -175,33 +175,47 @@ export default {
     names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
     events: [],
     user_id: null,
+    
   }),
-  mounted () {
-    // Get user_id from localstorage
-    this.user_id = localStorage.getItem('userID');
-    console.log('User ID:', this.user_id)
-    // Fetch user-specific appointments when the component is mounted
-    this.fetchAppointments();
-    this.type = 'day'; // set the default view to daily
-    // focus on today's date from 4pm to 11pm (hardcoded)
-    this.focus = new Date(new Date().setHours(16, 0, 0, 0));
+  mounted() {
+  // Get user_id from localstorage
+  this.user_id = localStorage.getItem('userID');
+  console.log('User ID:', this.user_id);
+
+  // Fetch user-specific appointments when the component is mounted
+  this.fetchAppointments();
+  this.type = 'day'; // set the default view to daily
+
+  // focus on today's date from 4pm to 11pm (hardcoded)
+  this.focus = new Date(new Date().setHours(16, 0, 0, 0));
 
   this.updateRange({ start: { date: this.focus.toISOString().split('T')[0] } }); // load events for today
   this.$refs.calendar.checkChange();
-  },
+},
+
   methods: {
     async fetchAppointments() {
-      try {
-        const response = await axios.get(`http://localhost:5001/appointmentsforbarber/${this.user_id}`, {
-    });
-    this.events = response.data.appointments;
+  try {
+    const response = await axios.get(`http://localhost:5001/appointmentsforbarber/${this.user_id}`);
+    const appointments = response.data.appointments;
+
+    // Map the API response to the format expected by the calendar component
+    this.events = appointments.map(appointment => ({
+      name: appointment.service.service_name, // Display the service name as the event name
+      start: new Date(appointment.appointment_date_time), // Convert the appointment date/time to a Date object
+      end: new Date(appointment.appointment_end_date_time), // Convert the end time to a Date object
+      color: '#add8e6', // You can set a default color for appointments
+      timed: true, // Set to true to display as a timed event
+      data: appointment, // Store the full appointment data if needed
+    }));
+
     console.log('Appointments:', this.events);
-    }
-     catch (error) {
-      console.error('Error fetching appointments:', error);
-      
-    }
-  },
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+  }
+},
+
+
   
     viewDay ({ date }) {
       this.focus = date
@@ -250,21 +264,6 @@ export default {
     timed: true,
   });
 
-  // Now add actual events from 4:00 PM to 9:00 PM every hour.
-  for (let hour = 16; hour <= 21; hour++) {
-    const eventStart = new Date(baseDate);
-    eventStart.setHours(hour, 0, 0, 0); // set the hour, the other parameters are for minutes, seconds, milliseconds
-    const eventEnd = new Date(eventStart);
-    eventEnd.setHours(hour + 1); // end time is one hour later
-
-    events.push({
-      name: "Hardcoded Appointment",
-      start: eventStart,
-      end: eventEnd,
-      color: this.colors[this.rnd(0, this.colors.length - 1)],
-      timed: true,
-    });
-  }
 
   this.events = events;
 },
