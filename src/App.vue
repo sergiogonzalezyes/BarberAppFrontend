@@ -38,12 +38,17 @@
           Welcome!
         </span>
       </v-container>
-      <v-btn 
-        v-if="isAuthenticated && ['admin', 'barber'].includes($store.state.app.role) && $route.path === '/services'" 
-        icon 
-        @click="handleAddService">
+      <v-btn
+        v-if="isAuthenticated && ['admin', 'barber'].includes($store.state.app.role) && $route.path === '/services'"
+        icon
+        @click="openAddServiceModal"
+      >
         <v-icon>mdi-plus</v-icon>
-    </v-btn>
+      </v-btn>
+      <!-- Render the AddServiceModal component when isAddServiceModalOpen is true -->
+      <AddServiceModal v-if="addDialogOpen" :dialog.sync="addDialogOpen" @modal-closed="closeAddServiceModal" />
+
+
       <v-switch
         v-model="$vuetify.theme.dark"
         inset
@@ -80,7 +85,12 @@
 
 
 <script>
+import AddServiceModal from '@/components/AddServiceModal.vue';
+
 export default {
+  components: {
+    AddServiceModal,
+  },
   data() {
     return {
       drawer: false,
@@ -95,6 +105,7 @@ export default {
         // { name: 'Test', path: '/test'},
       ],
       isSmallScreen: false, // Initial state
+      addDialogOpen: false,
     };
   },
   created() {
@@ -109,6 +120,19 @@ export default {
     window.removeEventListener('resize', this.handleResize);
   },
   methods: {
+    closeAddServiceModal() {
+    this.isAddServiceModalOpen = false;
+  },
+  handleAddDialogClosed() {
+    this.addDialogOpen = false;
+  },
+  openAddServiceModal() {
+    this.addDialogOpen = true;
+  },
+  closeModal() {
+    this.$emit('modal-closed'); // Emit the event to close the modal
+  },
+    
     handleResize() {
       this.isSmallScreen = window.innerWidth < 600;
     },
@@ -128,10 +152,9 @@ export default {
           });
       }
     },
-    handleAddService() {
-        // handle the addition of a new service here
-        console.log('Adding new service');
-    },
+    async handleAddService() {
+
+  },
   },
   computed: {
     isAuthenticated() {

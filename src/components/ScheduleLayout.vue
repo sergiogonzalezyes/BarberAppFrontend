@@ -84,60 +84,48 @@
           :activator="selectedElement"
           offset-x
         >
-          <v-card
-            color="grey lighten-4"
-            min-width="350px"
-            flat
-          >
-            <v-toolbar
-              :color="selectedEvent.color"
-              dark
-            >
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
-              <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
-              <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
-            </v-toolbar>
-            <v-card-text>
-              <!-- Display appointment details here -->
-              <div v-if="selectedEvent.id">
-                <p>Appointment Date and Time: {{ selectedEvent.appointment_date_time }}</p>
-                <p>Status: {{ selectedEvent.status }}</p>
-                <p>Customer:</p>
-                <ul>
-                  <li>Customer User ID: {{ selectedEvent.customer.customer_user_id }}</li>
-                  <li>Email: {{ selectedEvent.customer.email }}</li>
-                  <li>First Name: {{ selectedEvent.customer.first_name }}</li>
-                  <li>Last Name: {{ selectedEvent.customer.last_name }}</li>
-                  <li>Phone Number: {{ selectedEvent.customer.phone_number }}</li>
-                </ul>
-                <p>Service:</p>
-                <ul>
-                  <li>Service ID: {{ selectedEvent.service.service_id }}</li>
-                  <li>Service Name: {{ selectedEvent.service.service_name }}</li>
-                  <li>Service Description: {{ selectedEvent.service.service_description }}</li>
-                  <li>Service Price: {{ selectedEvent.service.service_price }}</li>
-                  <li>Service Duration: {{ selectedEvent.service.service_duration }}</li>
-                </ul>
-              </div>
-            </v-card-text>
-            <v-card-actions>
-              <v-btn
-                text
-                color="secondary"
-                @click="selectedOpen = false"
-              >
-                Cancel
-              </v-btn>
-            </v-card-actions>
-          </v-card>
+        <v-card
+  color="grey lighten-4"
+  min-width="350px"
+  flat
+>
+
+  <v-card-text>
+    <!-- Display appointment details here -->
+    <div v-if="selectedEventInfo">
+      <p>Appointment Date and Time: {{ selectedEventInfo.appointment_date_time }}</p>
+      <p>Status: {{ selectedEventInfo.status }}</p>
+      <p>Customer:</p>
+      <ul>
+        <li>Customer User ID: {{ selectedEventInfo.customer.customer_user_id }}</li>
+        <li>Email: {{ selectedEventInfo.customer.email }}</li>
+        <li>First Name: {{ selectedEventInfo.customer.first_name }}</li>
+        <li>Last Name: {{ selectedEventInfo.customer.last_name }}</li>
+        <li>Phone Number: {{ selectedEventInfo.customer.phone_number }}</li>
+      </ul>
+      <!-- dividder here -->
+      <div class="divider"></div>
+
+      <p>Service:</p>
+      <ul>
+        <li>Service Name: {{ selectedEventInfo.service.service_name }}</li>
+        <li>Service Description: {{ selectedEventInfo.service.service_description }}</li>
+        <li>Service Price: {{ selectedEventInfo.service.service_price }}</li>
+        <li>Service Duration: {{ selectedEventInfo.service.service_duration }}</li>
+      </ul>
+    </div>
+  </v-card-text>
+  <v-card-actions>
+    <v-btn
+      text
+      color="secondary"
+      @click="selectedOpen = false"
+    >
+      Cancel
+    </v-btn>
+  </v-card-actions>
+</v-card>
+
         </v-menu>
       </v-sheet>
     </v-col>
@@ -167,23 +155,26 @@ export default {
     names: ['Meeting', 'Holiday', 'PTO', 'Travel', 'Event', 'Birthday', 'Conference', 'Party'],
     events: [],
     user_id: null,
+    selectedEventInfo: null,
     
   }),
   mounted() {
-  // Get user_id from localstorage
+  // Get user_id from local storage
   this.user_id = localStorage.getItem('userID');
   console.log('User ID:', this.user_id);
 
-  // Fetch user-specific appointments when the component is mounted
-  this.fetchAppointments();
-  this.type = 'day'; // set the default view to daily
+  // Set the default focus to today's date
+  const today = new Date();
+  this.focus = today;
+  const formattedToday = today.toISOString().split('T')[0];
 
-  // focus on today's date from 4pm to 11pm (hardcoded)
-  this.focus = new Date(new Date().setHours(16, 0, 0, 0));
-
-  this.updateRange({ start: { date: this.focus.toISOString().split('T')[0] } }); // load events for today
+  // Fetch user-specific appointments for today's date
+  this.fetchDailyAppointments(formattedToday);
+  this.type = 'day'; // Set the default view to daily
+  this.updateRange({ start: { date: formattedToday } }); // Load events for today
   this.$refs.calendar.checkChange();
 },
+
 
   methods: {
     changeView (newType) {
@@ -191,7 +182,9 @@ export default {
 
       switch (newType) {
         case 'day':
-          this.fetchDailyAppointments();
+          // eslint-disable-next-line no-case-declarations
+          const currentDate = new Date().toISOString().split('T')[0];
+          this.fetchDailyAppointments(currentDate);
           break;
         case 'week':
           this.fetchWeeklyAppointments();
@@ -206,34 +199,11 @@ export default {
           break;
       }
     },
-    async fetchAppointments() {
+
+    async fetchDailyAppointments(date) {
       try {
-        const response = await axios.get(`http://localhost:5001/appointmentsforbarber/${this.user_id}`);
-        const appointments = response.data.appointments;
-
-        // Map the API response to the format expected by the calendar component
-        const newEvents = appointments.map(appointment => ({
-          name: appointment.service.service_name,
-          start: new Date(appointment.appointment_date_time),
-          end: new Date(appointment.appointment_end_date_time),
-          color: '#add8e6',
-          timed: true,
-          data: appointment,
-        }));
-
-        // Merge the new events with the existing events
-        this.events = [...this.events, ...newEvents];
-
-        console.log('Appointments:', this.events);
-      } catch (error) {
-        console.error('Error fetching appointments:', error);
-      }
-    },
-
-    async fetchDailyAppointments() {
-      try {
-        // Make an Axios API call to fetch daily appointments
-        const response = await axios.get(`http://localhost:5001/dailyappointments/${this.user_id}`);
+        // Make an Axios API call to fetch daily appointments for the specified date
+        const response = await axios.get(`http://localhost:5001/dailyappointments/${this.user_id}/${date}`);
         const dailyAppointments = response.data.appointments;
 
         // Map the API response to the format expected by the calendar component
@@ -249,11 +219,12 @@ export default {
         // Clear existing events and set them to the newly fetched data
         this.events = newEvents;
 
-        console.log('Daily Appointments:', this.events);
+        console.log('Daily Appointments for', date, ':', this.events);
       } catch (error) {
         console.error('Error fetching daily appointments:', error);
       }
     },
+
 
     async fetchWeeklyAppointments() {
       try {
@@ -334,6 +305,7 @@ export default {
     viewDay ({ date }) {
       this.focus = date
       this.type = 'day'
+      this.fetchDailyAppointments();
     },
     getEventColor (event) {
       return event.color
@@ -341,28 +313,38 @@ export default {
     setToday () {
       this.focus = ''
     },
-    prev () {
-      this.$refs.calendar.prev()
+    async prev() {
+      const prevDate = new Date(this.focus);
+      prevDate.setDate(prevDate.getDate() - 1); // Go to the previous day
+      this.focus = prevDate;
+      const formattedDate = prevDate.toISOString().split('T')[0];
+      console.log('Formatted Date:', formattedDate); // Add this line for debugging
+      this.fetchDailyAppointments(formattedDate);
     },
-    next () {
-      this.$refs.calendar.next()
+      
+    async next() {
+      const nextDate = new Date(this.focus);
+      nextDate.setDate(nextDate.getDate() + 1); // Go to the next day
+      this.focus = nextDate;
+      const formattedDate = nextDate.toISOString().split('T')[0];
+      console.log('Formatted Date:', formattedDate); // Add this line for debugging
+      this.fetchDailyAppointments(formattedDate);
     },
-    showEvent ({ nativeEvent, event }) {
-      const open = () => {
-        this.selectedEvent = event
-        this.selectedElement = nativeEvent.target
-        requestAnimationFrame(() => requestAnimationFrame(() => this.selectedOpen = true))
-      }
 
-      if (this.selectedOpen) {
-        this.selectedOpen = false
-        requestAnimationFrame(() => requestAnimationFrame(() => open()))
-      } else {
-        open()
-      }
+    showEvent({ nativeEvent, event }) {
+      // Assign the clicked event's data to the selectedEventInfo property
+      this.selectedEventInfo = event.data;
 
-      nativeEvent.stopPropagation()
+      // Store a reference to the DOM element that triggered the event click
+      this.selectedElement = nativeEvent.target;
+
+      // Open the event details card
+      this.selectedOpen = true;
+
+      // Prevent the click event from propagating further up the DOM tree
+      nativeEvent.stopPropagation();
     },
+
     updateRange({ start }) {
   const events = []
 
@@ -389,3 +371,12 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.divider {
+  margin: 20px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+
+</style>
