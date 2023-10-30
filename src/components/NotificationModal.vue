@@ -47,13 +47,24 @@ data() {
 return {
 dialogOpen: this.dialog,
 appointmentDetails: null, // Local data property to store appointment details
+
 };
 },
 watch: {
-dialog(newVal) {
-if (newVal !== this.dialogOpen) {
-    this.dialogOpen = newVal;
-}
+    dialog(newVal) {
+    console.log('Dialog value changed:', newVal);
+    if (!newVal) {
+        this.resetState();
+    }
+},
+dialogOpen(newVal) {
+    if (newVal !== this.dialog) {
+        this.$emit('update:dialog', newVal);
+    }
+    console.log('Local dialog value changed:', newVal);
+    if (!newVal) {
+        this.resetState();
+    }
 },
 },
 methods: {

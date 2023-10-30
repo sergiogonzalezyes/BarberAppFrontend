@@ -38,17 +38,9 @@
             {{ $refs.calendar.title }}
           </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-menu
-            bottom
-            right
-          >
+          <v-menu bottom right>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                outlined
-                color="grey darken-2"
-                v-bind="attrs"
-                v-on="on"
-              >
+              <v-btn outlined color="grey darken-2" v-bind="attrs" v-on="on">
                 <span>{{ typeToLabel[type] }}</span>
                 <v-icon right>
                   mdi-menu-down
@@ -56,16 +48,16 @@
               </v-btn>
             </template>
             <v-list>
-              <v-list-item @click="type = 'day'">
+              <v-list-item @click="changeView('day')">
                 <v-list-item-title>Day</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="type = 'week'">
+              <v-list-item @click="changeView('week')">
                 <v-list-item-title>Week</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="type = 'month'">
+              <v-list-item @click="changeView('month')">
                 <v-list-item-title>Month</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="type = '4day'">
+              <v-list-item @click="changeView('4day')">
                 <v-list-item-title>4 days</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -194,27 +186,149 @@ export default {
 },
 
   methods: {
+    changeView (newType) {
+      this.type = newType
+
+      switch (newType) {
+        case 'day':
+          this.fetchDailyAppointments();
+          break;
+        case 'week':
+          this.fetchWeeklyAppointments();
+          break;
+        case 'month':
+          this.fetchMonthlyAppointments();
+          break;
+        case '4day':
+          this.fetch4DayAppointments();
+          break;
+        default:
+          break;
+      }
+    },
     async fetchAppointments() {
-  try {
-    const response = await axios.get(`http://localhost:5001/appointmentsforbarber/${this.user_id}`);
-    const appointments = response.data.appointments;
+      try {
+        const response = await axios.get(`http://localhost:5001/appointmentsforbarber/${this.user_id}`);
+        const appointments = response.data.appointments;
 
-    // Map the API response to the format expected by the calendar component
-    this.events = appointments.map(appointment => ({
-      name: appointment.service.service_name, // Display the service name as the event name
-      start: new Date(appointment.appointment_date_time), // Convert the appointment date/time to a Date object
-      end: new Date(appointment.appointment_end_date_time), // Convert the end time to a Date object
-      color: '#add8e6', // You can set a default color for appointments
-      timed: true, // Set to true to display as a timed event
-      data: appointment, // Store the full appointment data if needed
-    }));
+        // Map the API response to the format expected by the calendar component
+        const newEvents = appointments.map(appointment => ({
+          name: appointment.service.service_name,
+          start: new Date(appointment.appointment_date_time),
+          end: new Date(appointment.appointment_end_date_time),
+          color: '#add8e6',
+          timed: true,
+          data: appointment,
+        }));
 
-    console.log('Appointments:', this.events);
-  } catch (error) {
-    console.error('Error fetching appointments:', error);
-  }
-},
+        // Merge the new events with the existing events
+        this.events = [...this.events, ...newEvents];
 
+        console.log('Appointments:', this.events);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+      }
+    },
+
+    async fetchDailyAppointments() {
+      try {
+        // Make an Axios API call to fetch daily appointments
+        const response = await axios.get(`http://localhost:5001/dailyappointments/${this.user_id}`);
+        const dailyAppointments = response.data.appointments;
+
+        // Map the API response to the format expected by the calendar component
+        const newEvents = dailyAppointments.map(appointment => ({
+          name: appointment.service.service_name,
+          start: new Date(appointment.appointment_date_time),
+          end: new Date(appointment.appointment_end_date_time),
+          color: '#add8e6',
+          timed: true,
+          data: appointment,
+        }));
+
+        // Clear existing events and set them to the newly fetched data
+        this.events = newEvents;
+
+        console.log('Daily Appointments:', this.events);
+      } catch (error) {
+        console.error('Error fetching daily appointments:', error);
+      }
+    },
+
+    async fetchWeeklyAppointments() {
+      try {
+        // Make an Axios API call to fetch weekly appointments
+        const response = await axios.get(`http://localhost:5001/weeklyappointments/${this.user_id}`);
+        const weeklyAppointments = response.data.appointments;
+
+        // Map the API response to the format expected by the calendar component
+        const newEvents = weeklyAppointments.map(appointment => ({
+          name: appointment.service.service_name,
+          start: new Date(appointment.appointment_date_time),
+          end: new Date(appointment.appointment_end_date_time),
+          color: '#add8e6',
+          timed: true,
+          data: appointment,
+        }));
+
+        // Clear existing events and set them to the newly fetched data
+        this.events = newEvents;
+
+        console.log('Weekly Appointments:', this.events);
+      } catch (error) {
+        console.error('Error fetching weekly appointments:', error);
+      }
+    },
+
+    async fetchMonthlyAppointments() {
+      try {
+        // Make an Axios API call to fetch monthly appointments
+        const response = await axios.get(`http://localhost:5001/monthlyappointments/${this.user_id}`);
+        const monthlyAppointments = response.data.appointments;
+
+        // Map the API response to the format expected by the calendar component
+        const newEvents = monthlyAppointments.map(appointment => ({
+          name: appointment.service.service_name,
+          start: new Date(appointment.appointment_date_time),
+          end: new Date(appointment.appointment_end_date_time),
+          color: '#add8e6',
+          timed: true,
+          data: appointment,
+        }));
+
+        // Clear existing events and set them to the newly fetched data
+        this.events = newEvents;
+
+        console.log('Monthly Appointments:', this.events);
+      } catch (error) {
+        console.error('Error fetching monthly appointments:', error);
+      }
+    },
+
+    async fetch4DayAppointments() {
+      try {
+        // Make an Axios API call to fetch 4-day appointments
+        const response = await axios.get(`http://localhost:5001/4dayappointments/${this.user_id}`);
+        const fourDayAppointments = response.data.appointments;
+
+        // Map the API response to the format expected by the calendar component
+        const newEvents = fourDayAppointments.map(appointment => ({
+          name: appointment.service.service_name,
+          start: new Date(appointment.appointment_date_time),
+          end: new Date(appointment.appointment_end_date_time),
+          color: '#add8e6',
+          timed: true,
+          data: appointment,
+        }));
+
+        // Clear existing events and set them to the newly fetched data
+        this.events = newEvents;
+
+        console.log('4-Day Appointments:', this.events);
+      } catch (error) {
+        console.error('Error fetching 4-day appointments:', error);
+      }
+    },
 
   
     viewDay ({ date }) {
