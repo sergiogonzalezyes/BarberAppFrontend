@@ -15,6 +15,20 @@
             </v-icon>
           </v-btn>
         </div>
+        <div class="yelpsubheading">Leave a review on Yelp!</div>
+        <div class="icon-group">
+        <v-btn
+        class="mx-2"
+        :color="$vuetify.theme.dark ? 'white' : 'black'"
+        icon
+        @click="redirectToYelp"
+      >
+        <v-icon size="24px">
+          mdi-message-draw  
+        </v-icon>
+        </v-btn>
+  
+        </div>
       </v-card-title>
       <v-card-text class="py-2 text-center" :color="$vuetify.theme.dark ? 'white' : 'black'">
         {{ new Date().getFullYear() }} — <strong>D-Cutz</strong>
@@ -29,6 +43,9 @@ export default {
   methods: {
     redirectToInstagram() {
       window.open('https://instagram.com/danny_37posey?igshid=NzZlODBkYWE4Ng==', '_blank');
+    },
+    redirectToYelp() {
+      window.open('https://www.yelp.com/biz/d-cutz-barber-shop-los-angeles', '_blank');
     },
   },
 };
