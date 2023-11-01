@@ -133,8 +133,8 @@ export default {
     // Convert the object to an array of time slot objects and format the time
     this.availableTimeSlots = Object.keys(data.available_time_slots).map(slotNumber => {
       const timeSlot = data.available_time_slots[slotNumber];
-      const startTime = this.convertToNormalTime(timeSlot.start_time);
-      const endTime = this.convertToNormalTime(timeSlot.end_time);
+      const startTime = timeSlot.start_time;
+      const endTime = timeSlot.end_time;
       
       return {
         slotNumber: parseInt(slotNumber),
@@ -149,25 +149,25 @@ export default {
   }
 },
 
-convertToNormalTime(militaryTime) {
-  const timeParts = militaryTime.split(':');
-  let hours = parseInt(timeParts[0]);
-  const minutes = timeParts[1];
-  let amPm = 'AM';
+// convertToNormalTime(militaryTime) {
+//   const timeParts = militaryTime.split(':');
+//   let hours = parseInt(timeParts[0]);
+//   const minutes = timeParts[1];
+//   let amPm = 'AM';
 
-  if (hours >= 12) {
-    amPm = 'PM';
-    if (hours > 12) {
-      hours -= 12;
-    }
-  }
+//   if (hours >= 12) {
+//     amPm = 'PM';
+//     if (hours > 12) {
+//       hours -= 12;
+//     }
+//   }
 
-  if (hours === 0) {
-    hours = 12;
-  }
+//   if (hours === 0) {
+//     hours = 12;
+//   }
 
-  return `${String(hours).padStart(2, '0')}:${minutes} ${amPm}`;
-},
+//   return `${String(hours).padStart(2, '0')}:${minutes} ${amPm}`;
+// },
 
 
     onBarberSelected() {
