@@ -45,7 +45,7 @@ export default {
       window.open('https://instagram.com/danny_37posey?igshid=NzZlODBkYWE4Ng==', '_blank');
     },
     redirectToYelp() {
-      window.open('https://www.yelp.com/biz/d-cutz-barber-shop-los-angeles', '_blank');
+      window.open('https://www.yelp.com/biz/d-cutz-houston', '_blank');
     },
   },
 };
