@@ -39,7 +39,7 @@
         </span>
       </v-container>
       <v-btn
-        v-if="isAuthenticated && ['admin', 'barber'].includes($store.state.app.role) && $route.path === '/services'"
+        v-if="isAuthenticated && ['admin'].includes($store.state.app.role) && $route.path === '/services'"
         icon
         @click="openAddServiceModal"
       >
@@ -102,6 +102,7 @@ export default {
         { name: 'Profile', path: '/profile', requiresAuth: true, roles: ['admin', 'customer', 'barber'] },
         { name: 'About', path: '/about' },
         { name: 'Reviews', path: '/reviews'},
+        { name: 'Barbers', path: '/barbers', requiresAuth: true, roles: ['admin']}
         // { name: 'Test', path: '/test'},
       ],
       isSmallScreen: false, // Initial state

@@ -58,9 +58,15 @@ const routes = [
     component: () => import('@/views/RegisterView.vue'),
   },
   {
+    path: '/barbers',
+    name: 'Barbers',
+    component: () => import('@/views/BarbersView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },
+
 ];
 
 const router = new VueRouter({
