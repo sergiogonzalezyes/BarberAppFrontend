@@ -18,7 +18,7 @@
               :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
               @click="handleEditService(service)"
             >
-              Edit Service
+              Edit
             </v-btn>
             <!-- If user is not logged in -->
             <v-btn
@@ -33,9 +33,16 @@
             <v-btn
               v-if="['admin', 'barber'].includes(userRole)"
               :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
+              @click="handleDisableService(service.Service_ID)"
+            >
+              Disable
+            </v-btn>
+            <v-btn
+              v-if="['admin'].includes(userRole)"
+              :color="$vuetify.theme.dark ? '#555555' : '#ffefdb'"
               @click="handleDeleteService(service.Service_ID)"
             >
-              Delete Service
+              Remove
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -109,9 +116,19 @@ export default {
         console.log(`Service with ID ${serviceId} has been deleted.`);
         } catch (error) {
         console.error(`Error deleting service: ${error}`);
-        }
-        },
+      }
+    },
+    async handleDisableService(serviceId) {
+      try {
+        // Get the user_id from localstorage
+        const userId = localStorage.getItem('userID');
 
+        // Make an HTTP DELETE request to the backend API with user_id as a query parameter
+        await axios.put(`http://localhost:5001/services/disable/${serviceId}/${userId}`);
+      } catch (error) {
+        console.error(`Error disabling service: ${error}`);
+      }
+    },
   },
   watch: {
     // Watch for changes to userRole and log them
