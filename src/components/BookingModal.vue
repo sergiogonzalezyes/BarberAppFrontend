@@ -42,6 +42,16 @@
         ></v-select>
 
 
+        <v-select
+        :items="availablePaymentMethods"
+        item-text="name"
+        item-value="id"
+        v-model="selectedPaymentMethod"
+        label="Select a Payment Method"
+        :rules="[v => !!v || 'Payment Method is required']"
+        :disabled="!selectedTimeSlot"
+        ></v-select>
+        
 
         </v-form>
     </v-card-text>
@@ -72,6 +82,8 @@ export default {
       availableTimeSlots: [],
       selectedDateFormatted: null,
       selectedTimeSlot: null,
+      availablePaymentMethods: [],
+      selectedPaymentMethod: null,
     };
   },
   watch: {
@@ -149,6 +161,30 @@ export default {
   }
 },
 
+async fetchPaymentMethods() {
+  try {
+    const response = await axios.get('http://localhost:5001/payment-methods');
+    const responseData = response.data;
+
+    if (Array.isArray(responseData.payment_methods)) {
+      // If the payment_methods property is an array, map it to the availablePaymentMethods array
+      this.availablePaymentMethods = responseData.payment_methods.map(method => ({
+        id: method.id,
+        name: method.name,
+      }));
+
+      console.log('Payment methods:', this.availablePaymentMethods);
+    } else {
+      console.error('Payment methods data is not an array:', responseData);
+      // Handle this situation as needed, e.g., by setting availablePaymentMethods to an empty array or displaying an error message
+    }
+  } catch (error) {
+    console.error('Error fetching payment methods:', error);
+  }
+},
+
+
+
 // convertToNormalTime(militaryTime) {
 //   const timeParts = militaryTime.split(':');
 //   let hours = parseInt(timeParts[0]);
@@ -207,7 +243,8 @@ export default {
       end_time,   // Include end_time in the bookingData
       // Include the service id in the bookingData
       service_id: this.service.Service_ID,
-      customer_id: customer_id
+      customer_id: customer_id,
+      payment_method: this.selectedPaymentMethod,
     };
 
     console.log('Booking data:', bookingData);
@@ -241,6 +278,9 @@ export default {
   this.availableTimeSlots = {};
   this.selectedDateFormatted = null;
   this.selectedTimeSlot = null;
+  this.availablePaymentMethods = [];
+  this.selectedPaymentMethod = null;
+
   
   // Clear user_info
   this.user_info = {
@@ -268,6 +308,7 @@ created() {
   if (this.service) {
     this.fetchBarbersAndTimeSlots(this.service.Service_ID);
   }
+  this.fetchPaymentMethods();
 },
 
 computed: {
