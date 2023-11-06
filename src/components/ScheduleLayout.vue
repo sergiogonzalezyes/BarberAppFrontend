@@ -181,6 +181,8 @@ export default {
     AddBlockDialogOpen: false,
     availableTimeSlots: [],
     selectedTimeSlots: null,
+    unavailableTimeSlots: [],
+    selectedUnavailableTimeSlots: null,
     }),
     mounted() {
     // Get user_id from local storage
@@ -201,6 +203,7 @@ export default {
     this.updateRange({ start: { date: formattedToday } }); // Load events for today
     this.$refs.calendar.checkChange();
     this.fetchAvailableTimeSlots(formattedToday);
+    this.fetchUnavailableTimeSlots(formattedToday);
   },
   components: {
     AddBlockModal,
@@ -213,6 +216,41 @@ export default {
     handleAddBlockClosed() {
       this.AddBlockDialogOpen = false;
     },
+
+    async fetchUnavailableTimeSlots(date) {
+  try {
+    // Make an Axios API call to fetch unavailable time slots
+    const response = await axios.get(`http://localhost:5001/unavailabletimeslots/${this.user_id}/${date}`);
+    const unavailableTimeSlotsObj = response.data.unavailable_time_slots;
+
+    // Check if the object is not empty
+    if (Object.keys(unavailableTimeSlotsObj).length > 0) {
+      // Convert the object into an array of events
+      const unavailableTimeSlots = Object.values(unavailableTimeSlotsObj).map(slot => ({
+        name: "Unavailable Time Slot",
+        start: slot.start_time,
+        end: slot.end_time,
+        color: 'red', // Set the color to red
+        timed: true,
+      }));
+
+      // Clear existing events and set them to the newly fetched data
+      this.events = unavailableTimeSlots;
+
+      console.log('Unavailable Time Slots for', date, ':', this.events);
+    } else {
+      // Handle the case where unavailableTimeSlots is an empty object
+      console.warn('Unavailable Time Slots data is empty:', unavailableTimeSlotsObj);
+    }
+  } catch (error) {
+    console.error('Error fetching unavailable time slots:', error);
+  }
+},
+
+
+
+
+
     async fetchAvailableTimeSlots(date) {
       try {
         // Make an Axios API call to fetch available time slots
@@ -238,6 +276,7 @@ export default {
           // eslint-disable-next-line no-case-declarations
           const currentDate = new Date().toISOString().split('T')[0];
           this.fetchDailyAppointments(currentDate);
+          this.fetchUnavailableTimeSlots(currentDate);
           break;
         case 'week':
           this.fetchWeeklyAppointments();
@@ -258,6 +297,7 @@ export default {
         // Make an Axios API call to fetch daily appointments for the specified date
         const response = await axios.get(`http://localhost:5001/dailyappointments/${this.user_id}/${date}`);
         const dailyAppointments = response.data.appointments;
+        console.log('Daily Appointments:', typeof dailyAppointments)
 
         // Map the API response to the format expected by the calendar component
         const newEvents = dailyAppointments.map(appointment => ({
@@ -375,6 +415,7 @@ export default {
       this.focus = date
       this.type = 'day'
       this.fetchDailyAppointments();
+      this.fetchUnavailableTimeSlots();
     },
     getEventColor (event) {
       return event.color
@@ -392,6 +433,7 @@ export default {
 
     // Fetch data for the current day
     this.fetchDailyAppointments(formattedToday);
+    this.fetchUnavailableTimeSlots(formattedToday);
   },
 
     async prev() {
@@ -401,6 +443,7 @@ export default {
       const formattedDate = prevDate.toISOString().split('T')[0];
       console.log('Formatted Date:', formattedDate); // Add this line for debugging
       this.fetchDailyAppointments(formattedDate);
+      this.fetchUnavailableTimeSlots(formattedDate);
     },
       
     async next() {
@@ -410,6 +453,7 @@ export default {
       const formattedDate = nextDate.toISOString().split('T')[0];
       console.log('Formatted Date:', formattedDate); // Add this line for debugging
       this.fetchDailyAppointments(formattedDate);
+      this.fetchAvailableTimeSlots(formattedDate);
     },
 
     showEvent({ nativeEvent, event }) {
@@ -427,10 +471,10 @@ export default {
     },
 
     updateRange({ start }) {
-  const events = []
+  const events = [];
 
   // Assume the date range is only one day for simplicity.
-  const baseDate = new Date(`${start.date}T00:00:00`)
+  const baseDate = new Date(`${start.date}T00:00:00`);
 
   // Add a non-event from 12:00 AM to 4:00 PM to block off this time.
   events.push({
@@ -442,8 +486,11 @@ export default {
   });
 
 
+
   this.events = events;
 },
+
+
 
     rnd (a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a

@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
 props: {
     dialog: {
@@ -44,6 +46,7 @@ data() {
     return {
     selectedTimeSlots: [],
     localDialog: this.dialog,
+    user_id: null,
     };
 },
 methods: {
@@ -57,12 +60,40 @@ methods: {
         this.selectedTimeSlots.splice(index, 1);
     }
     },
-    saveSelectedTimeSlots() {
-    // Send the selectedTimeSlots array to the parent component or perform any other desired action
-    
-    this.$emit('save', this.selectedTimeSlots);
-    this.closeDialog();
+
+    async saveSelectedTimeSlots() {
+        this.user_id = localStorage.getItem('userID');
+        const today = new Date();
+        today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
+
+        // Format the current date to match your date format (e.g., "YYYY-MM-DD")
+        const formattedToday = today.toISOString().split('T')[0];
+
+
+        try {
+            // Send the selectedTimeSlots array to the server to update the database
+            const response = await axios.put(`http://localhost:5001/addBlock/${this.user_id}/${formattedToday}`, this.selectedTimeSlots);
+            console.log('response:', response);
+
+            // Assuming the server response indicates success, update the availability status locally
+            if (response.status === 200) {
+            // Loop through the selectedTimeSlots and mark them as "Unavailable"
+            for (const slot of this.selectedTimeSlots) {
+                slot.availability = 'Unavailable';
+            }
+
+            // Emit an event to notify the parent component of the updated data
+            this.$emit('save', this.selectedTimeSlots);
+            }
+
+            // Close the dialog
+            this.closeDialog();
+        } catch (error) {
+            console.error('Error saving time slots:', error);
+        }
     },
+
+
     closeDialog() {
     this.selectedTimeSlots = []; // Clear the selected time slots when the dialog is closed
     this.$emit('dialog-closed');
