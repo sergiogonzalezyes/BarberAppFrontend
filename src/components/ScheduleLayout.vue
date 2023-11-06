@@ -165,7 +165,7 @@ export default {
 
     // Set the default focus to today's date in CST
     const today = new Date();
-    today.setHours(today.getHours() - 1); // Subtract 5 hours for CST (UTC-6)
+    today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
     console.log('Today in CST:', today); // Add this line for debugging
     this.focus = today;
     const formattedToday = today.toISOString().split('T')[0];
@@ -314,9 +314,21 @@ export default {
     getEventColor (event) {
       return event.color
     },
-    setToday () {
-      this.focus = ''
-    },
+    setToday() {
+    // Calculate the current date in the local timezone
+    const today = new Date();
+    today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
+
+    // Format the current date to match your date format (e.g., "YYYY-MM-DD")
+    const formattedToday = today.toISOString().split('T')[0];
+
+    // Set the focus to the current date
+    this.focus = today;
+
+    // Fetch data for the current day
+    this.fetchDailyAppointments(formattedToday);
+  },
+
     async prev() {
       const prevDate = new Date(this.focus);
       prevDate.setDate(prevDate.getDate() - 1); // Go to the previous day
