@@ -157,26 +157,26 @@ export default {
     user_id: null,
     selectedEventInfo: null,
     
-  }),
-  mounted() {
-  // Get user_id from local storage
-  this.user_id = localStorage.getItem('userID');
-  console.log('User ID:', this.user_id);
+    }),
+    mounted() {
+    // Get user_id from local storage
+    this.user_id = localStorage.getItem('userID');
+    console.log('User ID:', this.user_id);
 
-  // Set the default focus to today's date in CST
-  const today = new Date();
-  today.setHours(today.getHours() - 5); // Subtract 5 hours for CST (UTC-6)
-  console.log('Today in CST:', today); // Add this line for debugging
-  this.focus = today;
-  const formattedToday = today.toISOString().split('T')[0];
-  console.log('Formatted Today in CST:', formattedToday); // Add this line for debugging
+    // Set the default focus to today's date in CST
+    const today = new Date();
+    today.setHours(today.getHours() - 1); // Subtract 5 hours for CST (UTC-6)
+    console.log('Today in CST:', today); // Add this line for debugging
+    this.focus = today;
+    const formattedToday = today.toISOString().split('T')[0];
+    console.log('Formatted Today in CST:', formattedToday); // Add this line for debugging
 
-  // Fetch user-specific appointments for today's date
-  this.fetchDailyAppointments(formattedToday);
-  this.type = 'day'; // Set the default view to daily
-  this.updateRange({ start: { date: formattedToday } }); // Load events for today
-  this.$refs.calendar.checkChange();
-},
+    // Fetch user-specific appointments for today's date
+    this.fetchDailyAppointments(formattedToday);
+    this.type = 'day'; // Set the default view to daily
+    this.updateRange({ start: { date: formattedToday } }); // Load events for today
+    this.$refs.calendar.checkChange();
+  },
 
 
 
