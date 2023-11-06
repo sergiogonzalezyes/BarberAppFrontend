@@ -132,6 +132,7 @@
         <li>Service Description: {{ selectedEventInfo.service.service_description }}</li>
         <li>Service Price: {{ selectedEventInfo.service.service_price }}</li>
         <li>Service Duration: {{ selectedEventInfo.service.service_duration }}</li>
+        <li>Payment Method: {{ selectedEventInfo.payment_method }}</li>
       </ul>
     </div>
   </v-card-text>
@@ -205,12 +206,9 @@ export default {
     AddBlockModal,
   },
 
-
-
   methods: {
-    handleAddBlockNow(availableTimeSlots) {
+    handleAddBlockNow() {
       this.AddBlockDialogOpen = true;
-      this.availableTimeSlots = availableTimeSlots;
     },
     handleAddBlockClosed() {
       this.AddBlockDialogOpen = false;
@@ -220,9 +218,13 @@ export default {
         // Make an Axios API call to fetch available time slots
         const response = await axios.get(`http://localhost:5001/availabletimeslots/${this.user_id}/${date}`);
         const availableTimeSlots = response.data.available_time_slots;
-        
 
-        console.log('Available Time Slots:', availableTimeSlots); // Add this line for debugging
+        // Set the available time slots to the newly fetched data
+        this.availableTimeSlots = availableTimeSlots;
+        console.log('Available Time Slots:', typeof availableTimeSlots);
+
+
+        // console.log('Available Time Slots:', availableTimeSlots); // Add this line for debugging
       } catch (error) {
         console.error('Error fetching available time slots:', error);
       }
@@ -265,6 +267,7 @@ export default {
           color: '#add8e6',
           timed: true,
           data: appointment,
+          payment_method: appointment.payment_method,
         }));
 
         // Clear existing events and set them to the newly fetched data

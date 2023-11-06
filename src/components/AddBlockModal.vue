@@ -36,7 +36,7 @@ props: {
     required: true,
     },
     availableTimeSlots: {
-    type: Array,
+    type: Object,
     required: true,
     },
 },
@@ -59,6 +59,7 @@ methods: {
     },
     saveSelectedTimeSlots() {
     // Send the selectedTimeSlots array to the parent component or perform any other desired action
+    
     this.$emit('save', this.selectedTimeSlots);
     this.closeDialog();
     },
