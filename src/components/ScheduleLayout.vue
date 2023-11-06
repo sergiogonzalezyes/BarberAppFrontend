@@ -12,6 +12,7 @@
           >
             Today
           </v-btn>
+
           <v-btn
             fab
             text
@@ -64,7 +65,24 @@
           </v-menu>
         </v-toolbar>
       </v-sheet>
+      <v-btn
+            class="mr-4"
+            color="primary"
+            @click="handleAddBlockNow"
+          >
+            Add Block
+          </v-btn>
+          <AddBlockModal
+            v-if="AddBlockDialogOpen"
+            :availableTimeSlots="availableTimeSlots"
+            :dialog.sync="AddBlockDialogOpen"
+            @dialog-closed="handleAddBlockClosed"
+          ></AddBlockModal>
+
       <v-sheet height="600">
+        <div class='total-cost'>
+          <h2>Total Income for the Day: ${{ calculateTotalCost() }}</h2>
+        </div>
         <v-calendar
           ref="calendar"
           v-model="focus"
@@ -78,12 +96,14 @@
           @change="updateRange"
           :first-interval="14"
         ></v-calendar>
+        
         <v-menu
           v-model="selectedOpen"
           :close-on-content-click="false"
           :activator="selectedElement"
           offset-x
         >
+        
         <v-card
   color="grey lighten-4"
   min-width="350px"
@@ -135,6 +155,7 @@
 
 <script>
 import axios from 'axios';
+import AddBlockModal from '@/components/AddBlockModal.vue';
 
 export default {
   data: () => ({
@@ -156,7 +177,9 @@ export default {
     events: [],
     user_id: null,
     selectedEventInfo: null,
-    
+    AddBlockDialogOpen: false,
+    availableTimeSlots: [],
+    selectedTimeSlots: null,
     }),
     mounted() {
     // Get user_id from local storage
@@ -176,11 +199,35 @@ export default {
     this.type = 'day'; // Set the default view to daily
     this.updateRange({ start: { date: formattedToday } }); // Load events for today
     this.$refs.calendar.checkChange();
+    this.fetchAvailableTimeSlots(formattedToday);
+  },
+  components: {
+    AddBlockModal,
   },
 
 
 
   methods: {
+    handleAddBlockNow(availableTimeSlots) {
+      this.AddBlockDialogOpen = true;
+      this.availableTimeSlots = availableTimeSlots;
+    },
+    handleAddBlockClosed() {
+      this.AddBlockDialogOpen = false;
+    },
+    async fetchAvailableTimeSlots(date) {
+      try {
+        // Make an Axios API call to fetch available time slots
+        const response = await axios.get(`http://localhost:5001/availabletimeslots/${this.user_id}/${date}`);
+        const availableTimeSlots = response.data.available_time_slots;
+        
+
+        console.log('Available Time Slots:', availableTimeSlots); // Add this line for debugging
+      } catch (error) {
+        console.error('Error fetching available time slots:', error);
+      }
+
+    },
     changeView (newType) {
       this.type = newType
 
@@ -305,6 +352,21 @@ export default {
       }
     },
 
+
+    calculateTotalCost() {
+  let totalCost = 0;
+
+  // Iterate through the events and sum up the service prices
+  for (const event of this.events) {
+    if (event.data && event.data.service && event.data.service.service_price) {
+      totalCost += event.data.service.service_price;
+    }
+  }
+
+  return totalCost;
+},
+
+
   
     viewDay ({ date }) {
       this.focus = date
@@ -394,5 +456,9 @@ export default {
   border-bottom: 1px solid #e0e0e0;
 }
 
+.total-cost {
+  margin: 20px 0;
+  text-align: center;
+}
 
 </style>
