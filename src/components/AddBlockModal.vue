@@ -4,20 +4,20 @@
     <v-card-title>Select Time Slots</v-card-title>
     <v-card-text>
         <v-list>
-        <v-list-item
+            <v-list-item
             v-for="slot in availableTimeSlots"
             :key="slot.slotNumber"
-        >
+            >
             <v-list-item-action>
-            <v-checkbox
+                <v-checkbox
                 v-model="selectedTimeSlots"
                 :value="slot"
-            ></v-checkbox>
+                ></v-checkbox>
             </v-list-item-action>
             <v-list-item-content>
-            <v-list-item-title>{{ slot.start_time }} - {{ slot.end_time }}</v-list-item-title>
+                <v-list-item-title>{{ formatTime(slot.start_time) }} - {{ formatTime(slot.end_time) }}</v-list-item-title>
             </v-list-item-content>
-        </v-list-item>
+            </v-list-item>
         </v-list>
     </v-card-text>
     <v-card-actions>
@@ -41,15 +41,26 @@ props: {
     type: Object,
     required: true,
     },
+    selected_date: {
+    type: String,
+    required: false,
+    },
 },
 data() {
     return {
     selectedTimeSlots: [],
     localDialog: this.dialog,
     user_id: null,
+    selectedDate: this.selected_date,
     };
 },
 methods: {
+    formatTime(timeString) {
+    const [hours, minutes] = timeString.split(':').map(Number);
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${period}`;
+  },
     toggleTimeSlot(slot) {
     const index = this.selectedTimeSlots.findIndex(selectedSlot => selectedSlot.slotNumber === slot.slotNumber);
     if (index === -1) {
@@ -63,16 +74,14 @@ methods: {
 
     async saveSelectedTimeSlots() {
         this.user_id = localStorage.getItem('userID');
-        const today = new Date();
-        today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
+        this.selectedDate = this.selected_date;
 
-        // Format the current date to match your date format (e.g., "YYYY-MM-DD")
-        const formattedToday = today.toISOString().split('T')[0];
+        console.log('date:', this.selectedDate);
 
 
         try {
             // Send the selectedTimeSlots array to the server to update the database
-            const response = await axios.put(`http://localhost:5001/addBlock/${this.user_id}/${formattedToday}`, this.selectedTimeSlots);
+            const response = await axios.put(`http://localhost:5001/addBlock/${this.user_id}/${this.selectedDate}`, this.selectedTimeSlots);
             console.log('response:', response);
 
             // Assuming the server response indicates success, update the availability status locally
@@ -97,6 +106,7 @@ methods: {
     closeDialog() {
     this.selectedTimeSlots = []; // Clear the selected time slots when the dialog is closed
     this.$emit('dialog-closed');
+    
     },
     
 },

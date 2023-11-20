@@ -32,6 +32,9 @@
             <div>
                 <strong>Service Price:</strong> ${{ appointmentDetails.Service_Price }}
             </div>
+            <div>
+                <strong>Payment Method:</strong> {{ appointmentDetails.Payment_Type_Name }}
+            </div>
         </div>
     </v-card-text>
     </v-card>

@@ -76,6 +76,7 @@
             v-if="AddBlockDialogOpen"
             :availableTimeSlots="availableTimeSlots"
             :dialog.sync="AddBlockDialogOpen"
+            :selected_date="formatDate(focus)"
             @dialog-closed="handleAddBlockClosed"
           ></AddBlockModal>
 
@@ -137,12 +138,21 @@
     </div>
   </v-card-text>
   <v-card-actions>
+
     <v-btn
       text
       color="secondary"
       @click="selectedOpen = false"
     >
-      Cancel
+      Close
+    </v-btn>
+    <v-spacer></v-spacer>
+    <v-btn
+    text
+    color="red"
+    @click="cancelAppointment"
+    >
+    Cancel Appointment
     </v-btn>
   </v-card-actions>
 </v-card>
@@ -181,8 +191,8 @@ export default {
     AddBlockDialogOpen: false,
     availableTimeSlots: [],
     selectedTimeSlots: null,
-    unavailableTimeSlots: [],
     selectedUnavailableTimeSlots: null,
+    blockedTimeSlots: [],
     }),
     mounted() {
     // Get user_id from local storage
@@ -191,7 +201,7 @@ export default {
 
     // Set the default focus to today's date in CST
     const today = new Date();
-    today.setHours(today.getHours() - 6 ); // Subtract 5 hours for CST (UTC-6)
+    today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
     console.log('Today in CST:', today); // Add this line for debugging
     this.focus = today;
     const formattedToday = today.toISOString().split('T')[0];
@@ -203,49 +213,78 @@ export default {
     this.updateRange({ start: { date: formattedToday } }); // Load events for today
     this.$refs.calendar.checkChange();
     this.fetchAvailableTimeSlots(formattedToday);
-    this.fetchUnavailableTimeSlots(formattedToday);
+    this.fetchBlockedTimeSlots(formattedToday);
   },
   components: {
     AddBlockModal,
   },
 
   methods: {
+    formatDate(date) {
+      if (date) {
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+      return '';
+    },
     handleAddBlockNow() {
       this.AddBlockDialogOpen = true;
     },
     handleAddBlockClosed() {
       this.AddBlockDialogOpen = false;
+      // refresh the calendar view to show the newly added block
+      this.fetchBlockedTimeSlots(this.formatDate(this.focus));
+      
     },
-
-    async fetchUnavailableTimeSlots(date) {
+    async fetchBlockedTimeSlots(date) {
   try {
-    // Make an Axios API call to fetch unavailable time slots
-    const response = await axios.get(`http://localhost:5001/unavailabletimeslots/${this.user_id}/${date}`);
-    const unavailableTimeSlotsObj = response.data.unavailable_time_slots;
+    const response = await axios.get(`http://localhost:5001/blockedtimeslots/${this.user_id}/${date}`);
+    const blockedTimeSlots = response.data;
 
-    // Check if the object is not empty
-    if (Object.keys(unavailableTimeSlotsObj).length > 0) {
-      // Convert the object into an array of events
-      const unavailableTimeSlots = Object.values(unavailableTimeSlotsObj).map(slot => ({
-        name: "Unavailable Time Slot",
-        start: slot.start_time,
-        end: slot.end_time,
-        color: 'red', // Set the color to red
-        timed: true,
-      }));
+    if (blockedTimeSlots && Object.keys(blockedTimeSlots).length > 0) {
+      console.log('Blocked Time Slots for', date, ':', blockedTimeSlots);
 
-      // Clear existing events and set them to the newly fetched data
-      this.events = unavailableTimeSlots;
+      const formattedBlockedTimeSlots = Object.values(blockedTimeSlots).map(blocked_slot => {
+        // Log date and time strings for debugging
+        console.log('Raw Date and Time:', date, blocked_slot.start_time, blocked_slot.end_time);
 
-      console.log('Unavailable Time Slots for', date, ':', this.events);
+        // Parse date and time strings correctly
+        const startDate = new Date(`${blocked_slot.start_time}`);
+        const endDate = new Date(`${blocked_slot.end_time}`);
+
+        // Log parsed dates for debugging
+        console.log('Parsed Start Date:', startDate);
+        console.log('Parsed End Date:', endDate);
+
+        return {
+          name: 'Blocked Time Slot',
+          start: startDate,
+          end: endDate,
+          color: 'red',
+          timed: true,
+        };
+      });
+
+      // Merge the formattedBlockedTimeSlots with existing events and set it
+      this.events = [...this.events, ...formattedBlockedTimeSlots];
+
+      // Log the updated events array for debugging
+      console.log('Updated Events Array:', this.events);
     } else {
-      // Handle the case where unavailableTimeSlots is an empty object
-      console.warn('Unavailable Time Slots data is empty:', unavailableTimeSlotsObj);
+      console.warn('Blocked Time Slots data is empty or invalid:', blockedTimeSlots);
     }
   } catch (error) {
-    console.error('Error fetching unavailable time slots:', error);
+    console.error('Error fetching blocked time slots:', error);
   }
 },
+
+
+
+
+
+
 
 
 
@@ -276,7 +315,7 @@ export default {
           // eslint-disable-next-line no-case-declarations
           const currentDate = new Date().toISOString().split('T')[0];
           this.fetchDailyAppointments(currentDate);
-          this.fetchUnavailableTimeSlots(currentDate);
+          this.fetchBlockedTimeSlots(currentDate);
           break;
         case 'week':
           this.fetchWeeklyAppointments();
@@ -409,13 +448,35 @@ export default {
   return totalCost;
 },
 
+async cancelAppointment() {
+  try {
+    // Make an Axios API call to cancel the selected appointment
+    const response = await axios.delete(`http://localhost:5001/cancelappointment/${this.selectedEventInfo.id}`);
+    console.log('Cancel Appointment Response:', response);
+
+    // Assuming the server response indicates success, update the appointment status locally
+    if (response.status === 200) {
+      // Update the appointment status to "Cancelled"
+      this.selectedEventInfo.status = 'Cancelled';
+
+      // Emit an event to notify the parent component of the updated data
+      this.$emit('save', this.selectedEventInfo);
+    }
+
+    // Close the dialog
+    this.selectedOpen = false;
+  } catch (error) {
+    console.error('Error cancelling appointment:', error);
+  }
+},
+
 
   
     viewDay ({ date }) {
       this.focus = date
       this.type = 'day'
       this.fetchDailyAppointments();
-      this.fetchUnavailableTimeSlots();
+      this.fetchBlockedTimeSlots();
     },
     getEventColor (event) {
       return event.color
@@ -423,8 +484,9 @@ export default {
     setToday() {
     // Calculate the current date in the local timezone
     const today = new Date();
-    today.setHours(today.getHours() - 6); // Subtract 5 hours for CST (UTC-6)
-
+    today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
+    
+    console.log('Today in CST HMMMM:', today); // Add this line for debugging
     // Format the current date to match your date format (e.g., "YYYY-MM-DD")
     const formattedToday = today.toISOString().split('T')[0];
 
@@ -433,7 +495,7 @@ export default {
 
     // Fetch data for the current day
     this.fetchDailyAppointments(formattedToday);
-    this.fetchUnavailableTimeSlots(formattedToday);
+    this.fetchBlockedTimeSlots(formattedToday);
   },
 
     async prev() {
@@ -443,7 +505,8 @@ export default {
       const formattedDate = prevDate.toISOString().split('T')[0];
       console.log('Formatted Date:', formattedDate); // Add this line for debugging
       this.fetchDailyAppointments(formattedDate);
-      this.fetchUnavailableTimeSlots(formattedDate);
+      this.fetchBlockedTimeSlots(formattedDate);
+      this.fetchAvailableTimeSlots(formattedDate);
     },
       
     async next() {
@@ -454,21 +517,26 @@ export default {
       console.log('Formatted Date:', formattedDate); // Add this line for debugging
       this.fetchDailyAppointments(formattedDate);
       this.fetchAvailableTimeSlots(formattedDate);
+      this.fetchBlockedTimeSlots(formattedDate);
     },
 
     showEvent({ nativeEvent, event }) {
-      // Assign the clicked event's data to the selectedEventInfo property
-      this.selectedEventInfo = event.data;
+  // Assign the clicked event's data to the selectedEventInfo property
+  this.selectedEventInfo = event.data;
 
-      // Store a reference to the DOM element that triggered the event click
-      this.selectedElement = nativeEvent.target;
+  // Log selectedEventInfo to check if it contains appointment_id
+  console.log('Selected Event Info:', this.selectedEventInfo);
 
-      // Open the event details card
-      this.selectedOpen = true;
+  // Store a reference to the DOM element that triggered the event click
+  this.selectedElement = nativeEvent.target;
 
-      // Prevent the click event from propagating further up the DOM tree
-      nativeEvent.stopPropagation();
-    },
+  // Open the event details card
+  this.selectedOpen = true;
+
+  // Prevent the click event from propagating further up the DOM tree
+  nativeEvent.stopPropagation();
+},
+
 
     updateRange({ start }) {
   const events = [];

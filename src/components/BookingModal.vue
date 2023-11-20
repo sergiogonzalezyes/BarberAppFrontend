@@ -32,7 +32,7 @@
 
         <!-- Time Selection Section -->
         <v-select
-        :items="availableTimeSlots"
+        :items="formattedTimeSlots"
         item-text="start_time"
         item-value="slotNumber"
         v-model="selectedTimeSlot"
@@ -84,6 +84,7 @@ export default {
       selectedTimeSlot: null,
       availablePaymentMethods: [],
       selectedPaymentMethod: null,
+      formattedTimeSlots: [],
     };
   },
   watch: {
@@ -112,6 +113,21 @@ export default {
     },
   },
   methods: {
+    formatTime(timeString) {
+  // Parse the input time string
+  const [hours, minutes] = timeString.split(":").map(Number);
+
+  // Determine whether it's AM or PM
+  const period = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  const formattedHours = hours % 12 || 12;
+
+  // Format the time in "h:mmA" format
+  const formattedTime = `${formattedHours}:${minutes.toString().padStart(2, "0")}${period}`;
+
+  return formattedTime;
+},
     async fetchBarbersAndTimeSlots(serviceId) {
       try {
         const response = await axios.get(`http://localhost:5001/service/${serviceId}/availability`);
@@ -142,24 +158,29 @@ export default {
     const data = response.data;
     console.log('Available time slots:', data)
     
-    // Convert the object to an array of time slot objects and format the time
+    // Store the original time slots with the backend format
     this.availableTimeSlots = Object.keys(data.available_time_slots).map(slotNumber => {
       const timeSlot = data.available_time_slots[slotNumber];
-      const startTime = timeSlot.start_time;
-      const endTime = timeSlot.end_time;
-      
       return {
         slotNumber: parseInt(slotNumber),
-        start_time: startTime,
-        end_time: endTime
+        start_time: timeSlot.start_time,
+        end_time: timeSlot.end_time
       };
     });
 
-    console.log('Available time slots:', this.availableTimeSlots);
+    // Create a separate variable for display with formatted times
+    this.formattedTimeSlots = this.availableTimeSlots.map(slot => ({
+      ...slot,
+      start_time: this.formatTime(slot.start_time),
+      end_time: this.formatTime(slot.end_time),
+    }));
+
+    console.log('Available time slots:', this.formattedTimeSlots);
   } catch (error) {
     console.error('Error fetching available time slots:', error);
   }
 },
+
 
 async fetchPaymentMethods() {
   try {
