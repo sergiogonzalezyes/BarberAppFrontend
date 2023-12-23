@@ -42,13 +42,15 @@ export default {
     return {
       barbers: [],
       isDarkMode: false, // Add a data property for tracking dark mode
+      api_key: process.env.VUE_APP_PROD_API,
     };
   },
 
   methods: {
     async getBarbers() {
       try {
-        const response = await axios.get('http://localhost:5001/barber_crud');
+        // const response = await axios.get('http://localhost:5001/barber_crud');
+        const response = await axios.get(this.api_key+'/barber_crud');
         console.log(response.data);
 
         if (typeof response.data === 'object') {
@@ -84,7 +86,8 @@ export default {
 
     async updateServiceStatus(barberId, serviceId, newStatus) {
       try {
-        const response = await axios.put(`http://localhost:5001/barber_crud/${barberId}/services/${serviceId}`, {
+        // const response = await axios.put(`http://localhost:5001/barber_crud/${barberId}/services/${serviceId}`, {
+        const response = await axios.put(this.api_key+`/barber_crud/${barberId}/services/${serviceId}`, {
           status: newStatus,
         });
 

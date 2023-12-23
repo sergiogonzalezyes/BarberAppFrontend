@@ -85,6 +85,7 @@ export default {
       availablePaymentMethods: [],
       selectedPaymentMethod: null,
       formattedTimeSlots: [],
+      api_key: process.env.VUE_APP_PROD_API,
     };
   },
   watch: {
@@ -130,7 +131,8 @@ export default {
 },
     async fetchBarbersAndTimeSlots(serviceId) {
       try {
-        const response = await axios.get(`http://localhost:5001/service/${serviceId}/availability`);
+        // const response = await axios.get(`http://localhost:5001/service/${serviceId}/availability`);
+        const response = await axios.get(this.api_key+`/service/${serviceId}/availability`);
         const data = response.data;
 
         this.availableBarbersOptions = data.map(barber => ({
@@ -143,7 +145,8 @@ export default {
     },
     async fetchAvailableDatesForBarber(barber_id) {
       try {
-        const response = await axios.get(`http://localhost:5001/schedule/${barber_id}/available-dates`);
+        // const response = await axios.get(`http://localhost:5001/schedule/${barber_id}/available-dates`);
+        const response = await axios.get(this.api_key+`/schedule/${barber_id}/available-dates`);
         const data = response.data;
         console.log('Available dates:', data);
 
@@ -154,7 +157,8 @@ export default {
     },
     async fetchAvailableTimeSlotsForDate() {
   try {
-    const response = await axios.get(`http://localhost:5001/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
+    // const response = await axios.get(`http://localhost:5001/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
+    const response = await axios.get(this.api_key+`/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
     const data = response.data;
     console.log('Available time slots:', data)
     
@@ -184,7 +188,8 @@ export default {
 
 async fetchPaymentMethods() {
   try {
-    const response = await axios.get('http://localhost:5001/payment-methods');
+    // const response = await axios.get('http://localhost:5001/payment-methods');
+    const response = await axios.get(this.api_key+'/payment-methods');
     const responseData = response.data;
 
     if (Array.isArray(responseData.payment_methods)) {

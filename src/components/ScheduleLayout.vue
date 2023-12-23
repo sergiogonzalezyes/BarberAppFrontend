@@ -193,6 +193,7 @@ export default {
     selectedTimeSlots: null,
     selectedUnavailableTimeSlots: null,
     blockedTimeSlots: [],
+    api_key: process.env.VUE_APP_PROD_API,
     }),
     mounted() {
     // Get user_id from local storage
@@ -240,7 +241,8 @@ export default {
     },
     async fetchBlockedTimeSlots(date) {
   try {
-    const response = await axios.get(`http://localhost:5001/blockedtimeslots/${this.user_id}/${date}`);
+    // const response = await axios.get(`http://localhost:5001/blockedtimeslots/${this.user_id}/${date}`);
+    const response = await axios.get(this.api_key+`/blockedtimeslots/${this.user_id}/${date}`)
     const blockedTimeSlots = response.data;
 
     if (blockedTimeSlots && Object.keys(blockedTimeSlots).length > 0) {
@@ -293,7 +295,8 @@ export default {
     async fetchAvailableTimeSlots(date) {
       try {
         // Make an Axios API call to fetch available time slots
-        const response = await axios.get(`http://localhost:5001/availabletimeslots/${this.user_id}/${date}`);
+        // const response = await axios.get(`http://localhost:5001/availabletimeslots/${this.user_id}/${date}`);
+        const response = await axios.get(this.api_key+`/availabletimeslots/${this.user_id}/${date}`);
         const availableTimeSlots = response.data.available_time_slots;
 
         // Set the available time slots to the newly fetched data
@@ -334,7 +337,8 @@ export default {
     async fetchDailyAppointments(date) {
       try {
         // Make an Axios API call to fetch daily appointments for the specified date
-        const response = await axios.get(`http://localhost:5001/dailyappointments/${this.user_id}/${date}`);
+        // const response = await axios.get(`http://localhost:5001/dailyappointments/${this.user_id}/${date}`);
+        const response = await axios.get(this.api_key+`/dailyappointments/${this.user_id}/${date}`);
         const dailyAppointments = response.data.appointments;
         console.log('Daily Appointments:', typeof dailyAppointments)
 
@@ -362,7 +366,8 @@ export default {
     async fetchWeeklyAppointments() {
       try {
         // Make an Axios API call to fetch weekly appointments
-        const response = await axios.get(`http://localhost:5001/weeklyappointments/${this.user_id}`);
+        // const response = await axios.get(`http://localhost:5001/weeklyappointments/${this.user_id}`);
+        const response = await axios.get(this.api_key+`/weeklyappointments/${this.user_id}`);
         const weeklyAppointments = response.data.appointments;
 
         // Map the API response to the format expected by the calendar component
@@ -387,7 +392,8 @@ export default {
     async fetchMonthlyAppointments() {
       try {
         // Make an Axios API call to fetch monthly appointments
-        const response = await axios.get(`http://localhost:5001/monthlyappointments/${this.user_id}`);
+        // const response = await axios.get(`http://localhost:5001/monthlyappointments/${this.user_id}`);
+        const response = await axios.get(this.api_key+`/monthlyappointments/${this.user_id}`);
         const monthlyAppointments = response.data.appointments;
 
         // Map the API response to the format expected by the calendar component
@@ -412,7 +418,8 @@ export default {
     async fetch4DayAppointments() {
       try {
         // Make an Axios API call to fetch 4-day appointments
-        const response = await axios.get(`http://localhost:5001/4dayappointments/${this.user_id}`);
+        // const response = await axios.get(`http://localhost:5001/4dayappointments/${this.user_id}`);
+        const response = await axios.get(this.api_key+`/4dayappointments/${this.user_id}`);
         const fourDayAppointments = response.data.appointments;
 
         // Map the API response to the format expected by the calendar component
@@ -451,7 +458,8 @@ export default {
 async cancelAppointment() {
   try {
     // Make an Axios API call to cancel the selected appointment
-    const response = await axios.delete(`http://localhost:5001/cancelappointment/${this.selectedEventInfo.id}`);
+    // const response = await axios.delete(`http://localhost:5001/cancelappointment/${this.selectedEventInfo.id}`);
+    const response = await axios.delete(this.api_key+`/cancelappointment/${this.selectedEventInfo.id}`);
     console.log('Cancel Appointment Response:', response);
 
     // Assuming the server response indicates success, update the appointment status locally

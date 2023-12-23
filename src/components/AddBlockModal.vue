@@ -52,6 +52,7 @@ data() {
     localDialog: this.dialog,
     user_id: null,
     selectedDate: this.selected_date,
+    api_key: process.env.VUE_APP_PROD_API,
     };
 },
 methods: {
@@ -81,7 +82,9 @@ methods: {
 
         try {
             // Send the selectedTimeSlots array to the server to update the database
-            const response = await axios.put(`http://localhost:5001/addBlock/${this.user_id}/${this.selectedDate}`, this.selectedTimeSlots);
+            // const response = await axios.put(`http://localhost:5001/addBlock/${this.user_id}/${this.selectedDate}`, this.selectedTimeSlots);
+            const response = await axios.put(this.api_key+`/addBlock/${this.user_id}/${this.selectedDate}`, this.selectedTimeSlots);
+
             console.log('response:', response);
 
             // Assuming the server response indicates success, update the availability status locally

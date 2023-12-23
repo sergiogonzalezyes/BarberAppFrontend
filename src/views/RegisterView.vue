@@ -12,6 +12,7 @@ export default {
   data() {
     return {
       registrationErrorMsg: '',
+      api_key: process.env.VUE_APP_PROD_API,
     };
   },
   methods: {
@@ -24,7 +25,8 @@ export default {
     async performRegistration(registrationData) {
       try {
         // Make the Axios post request to your registration API
-        const response = await axios.post('http://localhost:5001/register', registrationData);
+        // const response = await axios.post('http://localhost:5001/register', registrationData);
+        const response = await axios.post(this.api_key+'/register', registrationData);
 
         // Check the response from the backend and handle success or failure accordingly
         if (response.data.success) {
