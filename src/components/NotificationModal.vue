@@ -52,7 +52,6 @@ dialogOpen: this.dialog,
 appointmentDetails: null, // Local data property to store appointment details
 api_key: process.env.VUE_APP_PROD_API,
 };
-};
 },
 watch: {
     dialog(newVal) {
