@@ -110,6 +110,7 @@ components: {
 },
 mounted() {
     console.log('ServicesView mounted');
+    console.log(this.api_key)
 },
 beforeDestroy() {
     console.log('ServicesView will be destroyed');
