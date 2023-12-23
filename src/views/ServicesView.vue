@@ -7,6 +7,10 @@
 </template>
 
 <script>
+
+import dotenv from 'dotenv';
+dotenv.config();
+
 import axios from 'axios';
 import ServicesLayout from '@/components/ServicesLayout.vue';
 import FooterPartial from '@/components/FooterPartial.vue';
@@ -15,6 +19,7 @@ export default {
 data() {
     return {
     services: [],
+    api_key: process.env.PROD_API,
     };
 },
 computed: {
@@ -44,7 +49,9 @@ methods: {
 fetchServicesBasedOnUserRole() {
   if (this.userRole === 'admin' || this.userRole === 'barber') {
     // Fetch services offered by the logged-in admin or barber
-    axios.get(`http://localhost:5001/services/${this.userId}`)
+    // axios.get(`http://localhost:5001/services/${this.userId}`)
+    axios.get(api_key+`services/${this.userId}`)
+
       .then((response) => {
         const servicesData = response.data.services;
 

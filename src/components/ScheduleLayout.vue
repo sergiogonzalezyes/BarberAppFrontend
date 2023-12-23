@@ -201,7 +201,7 @@ export default {
 
     // Set the default focus to today's date in CST
     const today = new Date();
-    today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
+    today.setHours(today.getHours() -6 ); // Subtract 5 hours for CST (UTC-6)
     console.log('Today in CST:', today); // Add this line for debugging
     this.focus = today;
     const formattedToday = today.toISOString().split('T')[0];
