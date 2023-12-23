@@ -47,7 +47,7 @@ fetchServicesBasedOnUserRole() {
   if (this.userRole === 'admin' || this.userRole === 'barber') {
     // Fetch services offered by the logged-in admin or barber
     // axios.get(`http://localhost:5001/services/${this.userId}`)
-    axios.get(this.api_key+`services/${this.userId}`)
+    axios.get(this.api_key+`/services/${this.userId}`)
 
       .then((response) => {
         const servicesData = response.data.services;
@@ -71,7 +71,7 @@ fetchServicesBasedOnUserRole() {
   } else {
     // Fetch services for non-logged-in users or other roles
     // axios.get('http://localhost:5001/services')
-      axios.get(this.api_key+'services')
+      axios.get(this.api_key+'/services')
       .then((response) => {
         const servicesData = response;
         console.log(servicesData)
