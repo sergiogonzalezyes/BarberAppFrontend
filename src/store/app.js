@@ -58,7 +58,7 @@ export default {
     async login({ commit, dispatch }, { username, password }) {
       try {
         const api_url = process.env.VUE_APP_API_URL;
-        const response = await axios.post(api_url+`/login`, { username, password });
+        const response = await axios.post(`${api_url}/login`, { username, password });
 
         if (response.data && response.data.success) {
           const user = response.data.user;
@@ -135,9 +135,9 @@ export default {
       try {
         // Include the username in the payload
         userData.username = state.username; // Access the username from the state
-    
+        const api_url = process.env.VUE_APP_API_URL;
         // Make a PUT request to update the user profile
-        const response = await axios.put('http://localhost:5001/update-profile', userData);
+        const response = await axios.put(`${api_url}/update-profile`, userData);
     
         if (response.data && response.data.success) {
           // Update the user profile in the store if the backend update was successful
