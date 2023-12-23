@@ -73,7 +73,7 @@ fetchServicesBasedOnUserRole() {
       axios.get(this.api_key+'services')
       .then((response) => {
         const servicesData = response.data.services;
-
+        console.log(servicesData)
         // Assuming your API provides image URLs for each service
         const servicesWithImages = servicesData.map((service, index) => {
           const imageNumber = (index % 3) + 1; // Cycles through 1, 2, 3
