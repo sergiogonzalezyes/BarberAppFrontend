@@ -57,6 +57,7 @@ export default {
   actions: {
     async login({ commit, dispatch }, { username, password }) {
       try {
+        console.log('API URL:', process.env.VUE_APP_API_URL)
         const response = await axios.post(`/login`, { username, password });
 
         if (response.data && response.data.success) {
