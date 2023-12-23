@@ -19,7 +19,7 @@ export default {
 data() {
     return {
     services: [],
-    api_key: process.env.PROD_API,
+    api_key: process.env.VUE_APP_PROD_API,
     };
 },
 computed: {

@@ -83,7 +83,7 @@ export default {
       selectedService: null,
       editDialogOpen: false,
       bookDialogOpen: false,
-      api_key: process.env.PROD_API,
+      api_key: process.env.VUE_APP_PROD_API,
     };
   },
   components: {
