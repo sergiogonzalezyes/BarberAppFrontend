@@ -72,7 +72,8 @@ fetchServicesBasedOnUserRole() {
       });
   } else {
     // Fetch services for non-logged-in users or other roles
-    axios.get('http://localhost:5001/services')
+    // axios.get('http://localhost:5001/services')
+      axios.get(api_key+'services')
       .then((response) => {
         const servicesData = response.data.services;
 
