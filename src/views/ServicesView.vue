@@ -51,6 +51,7 @@ fetchServicesBasedOnUserRole() {
 
       .then((response) => {
         const servicesData = response.data.services;
+        console.log(servicesData)
 
         // Manually add image paths to each service based on naming convention
         const servicesWithImages = servicesData.map((service, index) => {
@@ -72,7 +73,7 @@ fetchServicesBasedOnUserRole() {
     // axios.get('http://localhost:5001/services')
       axios.get(this.api_key+'services')
       .then((response) => {
-        const servicesData = response.data.services;
+        const servicesData = response;
         console.log(servicesData)
         // Assuming your API provides image URLs for each service
         const servicesWithImages = servicesData.map((service, index) => {
