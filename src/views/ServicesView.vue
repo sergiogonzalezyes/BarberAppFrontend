@@ -8,9 +8,6 @@
 
 <script>
 
-import dotenv from 'dotenv';
-dotenv.config();
-
 import axios from 'axios';
 import ServicesLayout from '@/components/ServicesLayout.vue';
 import FooterPartial from '@/components/FooterPartial.vue';
