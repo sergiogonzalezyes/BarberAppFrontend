@@ -277,7 +277,9 @@ async fetchPaymentMethods() {
 
     // Make an Axios POST request to send bookingData to your backend
     axios
-      .post('http://localhost:5001/bookings', bookingData)
+      // .post('http://localhost:5001/bookings', bookingData)
+      .post(this.api_key+'/bookings', bookingData)
+
       .then(() => {
         // Handle success
         alert('Booking Successful!');
