@@ -205,10 +205,14 @@ export default {
 
     console.log('Today:', today)
 
-    today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
-    console.log('FIRST Today:', today.setHours(today.getHours()))
-    console.log('SECOND Today:', today.setHours(today.getHours() - 6))
+    // Subtract the local timezone offset, then subtract 6 hours for CST
+    const offset = today.getTimezoneOffset() / 60; // Local timezone offset in hours
 
+    console.log('Offset:', offset)
+
+    today.setHours(today.getHours() - offset - 6);
+
+    console.log('Today:', today.setHours(today.getHours() - offset - 6))
 
     // console.log('Today in CST:', today); // Add this line for debugging
     this.focus = today;
