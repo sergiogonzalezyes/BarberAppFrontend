@@ -51,7 +51,7 @@ fetchServicesBasedOnUserRole() {
 
       .then((response) => {
         const servicesData = response.data.services;
-        console.log(servicesData)
+        // console.log(servicesData)
 
         // Manually add image paths to each service based on naming convention
         const servicesWithImages = servicesData.map((service, index) => {
@@ -63,10 +63,10 @@ fetchServicesBasedOnUserRole() {
         });
 
         this.services = servicesWithImages;
-        console.log(this.services);
+        // console.log(this.services);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   } else {
     // Fetch services for non-logged-in users or other roles
@@ -74,7 +74,7 @@ fetchServicesBasedOnUserRole() {
       axios.get(this.api_key+'/services')
       .then((response) => {
         const servicesData = response.data.services;
-        console.log(servicesData)
+        // console.log(servicesData)
         // Assuming your API provides image URLs for each service
         const servicesWithImages = servicesData.map((service, index) => {
           const imageNumber = (index % 3) + 1; // Cycles through 1, 2, 3
@@ -85,10 +85,10 @@ fetchServicesBasedOnUserRole() {
         });
 
         this.services = servicesWithImages;
-        console.log(this.services);
+        // console.log(this.services);
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   }
 },

@@ -113,7 +113,7 @@ export default {
     window.addEventListener('resize', this.handleResize);
     this.handleResize();
     // console log the resize 
-    console.log('Resize: ', this.isSmallScreen);
+    // console.log('Resize: ', this.isSmallScreen);
     
 
   },

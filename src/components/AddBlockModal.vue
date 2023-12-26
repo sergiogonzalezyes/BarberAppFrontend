@@ -77,7 +77,7 @@ methods: {
         this.user_id = localStorage.getItem('userID');
         this.selectedDate = this.selected_date;
 
-        console.log('date:', this.selectedDate);
+        // console.log('date:', this.selectedDate);
 
 
         try {
@@ -85,7 +85,7 @@ methods: {
             // const response = await axios.put(`http://localhost:5001/addBlock/${this.user_id}/${this.selectedDate}`, this.selectedTimeSlots);
             const response = await axios.put(this.api_key+`/addBlock/${this.user_id}/${this.selectedDate}`, this.selectedTimeSlots);
 
-            console.log('response:', response);
+            // console.log('response:', response);
 
             // Assuming the server response indicates success, update the availability status locally
             if (response.status === 200) {
@@ -127,7 +127,7 @@ watch: {
 mounted() {
     this.localDialog = this.dialog;
     // Log availableTimeSlots when the component is mounted
-    console.log('availableTimeSlots:', this.availableTimeSlots);
+    // console.log('availableTimeSlots:', this.availableTimeSlots);
 },
 
 

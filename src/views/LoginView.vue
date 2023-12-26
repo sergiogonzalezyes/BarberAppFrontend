@@ -19,7 +19,7 @@ export default {
     handleLogin(credentials) {
       this.username = credentials.username;
       this.password = credentials.password;
-      console.log('Received credentials:', credentials);
+      // console.log('Received credentials:', credentials);
       this.performLogin(); // Call the login logic function
     },
     async performLogin() {

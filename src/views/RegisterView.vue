@@ -19,7 +19,7 @@ export default {
     handleRegister(registrationData) {
       // Perform registration logic using registrationData
       // Example: Make an Axios post request to your registration API
-      console.log('Received registration data:', registrationData);
+      // console.log('Received registration data:', registrationData);
       this.performRegistration(registrationData); // Call the registration logic function with data
     },
     async performRegistration(registrationData) {

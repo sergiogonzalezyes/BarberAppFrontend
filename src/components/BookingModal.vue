@@ -90,7 +90,7 @@ export default {
   },
   watch: {
     dialog(newVal) {
-            console.log('Dialog value changed:', newVal);
+            // console.log('Dialog value changed:', newVal);
             if (!newVal) {
                 this.resetState();
             }
@@ -99,7 +99,7 @@ export default {
             if (newVal !== this.dialog) {
                 this.$emit('update:dialog', newVal);
             }
-            console.log('Local dialog value changed:', newVal);
+            // console.log('Local dialog value changed:', newVal);
             if (!newVal) {
                 this.resetState();
             }
@@ -148,7 +148,7 @@ export default {
         // const response = await axios.get(`http://localhost:5001/schedule/${barber_id}/available-dates`);
         const response = await axios.get(this.api_key+`/schedule/${barber_id}/available-dates`);
         const data = response.data;
-        console.log('Available dates:', data);
+        // console.log('Available dates:', data);
 
         this.availableDates = data.available_dates;
       } catch (error) {
@@ -160,7 +160,7 @@ export default {
     // const response = await axios.get(`http://localhost:5001/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
     const response = await axios.get(this.api_key+`/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
     const data = response.data;
-    console.log('Available time slots:', data)
+    // console.log('Available time slots:', data)
     
     // Store the original time slots with the backend format
     this.availableTimeSlots = Object.keys(data.available_time_slots).map(slotNumber => {
@@ -179,7 +179,7 @@ export default {
       end_time: this.formatTime(slot.end_time),
     }));
 
-    console.log('Available time slots:', this.formattedTimeSlots);
+    // console.log('Available time slots:', this.formattedTimeSlots);
   } catch (error) {
     console.error('Error fetching available time slots:', error);
   }
@@ -199,7 +199,7 @@ async fetchPaymentMethods() {
         name: method.name,
       }));
 
-      console.log('Payment methods:', this.availablePaymentMethods);
+      // console.log('Payment methods:', this.availablePaymentMethods);
     } else {
       console.error('Payment methods data is not an array:', responseData);
       // Handle this situation as needed, e.g., by setting availablePaymentMethods to an empty array or displaying an error message
@@ -273,7 +273,7 @@ async fetchPaymentMethods() {
       payment_method: this.selectedPaymentMethod,
     };
 
-    console.log('Booking data:', bookingData);
+    // console.log('Booking data:', bookingData);
 
     // Make an Axios POST request to send bookingData to your backend
     axios
@@ -331,7 +331,7 @@ created() {
     email: this.$store.state.app.email,
     phone: this.$store.state.app.phoneNumber,
   };
-  console.log('User data:', this.user_info);
+  // console.log('User data:', this.user_info);
 
   if (this.service) {
     this.fetchBarbersAndTimeSlots(this.service.Service_ID);

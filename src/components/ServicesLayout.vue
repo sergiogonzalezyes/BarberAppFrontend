@@ -116,7 +116,7 @@ export default {
        // Emit an event to inform the parent component that a service has been deleted
        this.$emit('service-deleted', serviceId);
 
-        console.log(`Service with ID ${serviceId} has been deleted.`);
+        // console.log(`Service with ID ${serviceId} has been deleted.`);
         } catch (error) {
         console.error(`Error deleting service: ${error}`);
       }
@@ -137,7 +137,7 @@ export default {
   watch: {
     // Watch for changes to userRole and log them
     userRole(newValue) {
-      console.log('userRole changed: ', newValue);
+      // console.log('userRole changed: ', newValue);
     },
   },
   computed: {

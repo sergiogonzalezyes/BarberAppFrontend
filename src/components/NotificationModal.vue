@@ -55,7 +55,7 @@ api_key: process.env.VUE_APP_PROD_API,
 },
 watch: {
     dialog(newVal) {
-    console.log('Dialog value changed:', newVal);
+    // console.log('Dialog value changed:', newVal);
     if (!newVal) {
         this.resetState();
     }
@@ -64,7 +64,7 @@ dialogOpen(newVal) {
     if (newVal !== this.dialog) {
         this.$emit('update:dialog', newVal);
     }
-    console.log('Local dialog value changed:', newVal);
+    // console.log('Local dialog value changed:', newVal);
     if (!newVal) {
         this.resetState();
     }
@@ -73,7 +73,7 @@ dialogOpen(newVal) {
 methods: {
 handleDialogClosed() {
 this.$emit('closeModal');
-console.log('Dialog closed');
+// console.log('Dialog closed');
 },
 async fetchAppointmentDetails() {
 try {
@@ -81,12 +81,12 @@ try {
     // const response = await axios.get(`http://localhost:5001/appointments/${this.notification.appointment_id}`);
     const response = await axios.get(this.api_key+`/appointments/${this.notification.appointment_id}`);
     const data = response.data;
-    console.log('Appointment details:', data);
+    // console.log('Appointment details:', data);
 
     // Update the local data property with the appointment details
     this.appointmentDetails = data;
 } catch (error) {
-    console.log('Error fetching appointment details:', error);
+    // console.log('Error fetching appointment details:', error);
 }
 },
 },

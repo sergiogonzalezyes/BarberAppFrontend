@@ -73,7 +73,7 @@ export default {
 
           this.items = response.data.notifications;
 
-          console.log('Notifications:', this.items);
+          // console.log('Notifications:', this.items);
         } catch (error) {
           console.error('Error fetching notifications:', error);
         }
@@ -85,7 +85,7 @@ export default {
 
       async markAsRead(index) {
         const notificationId = this.items[index].id;
-        console.log('Marking notification as read:', notificationId)
+        // console.log('Marking notification as read:', notificationId)
         try {
           // Make an API call to mark the notification as read
           // const response = await axios.put(`http://localhost:5001/mark-as-read/${notificationId}`);
@@ -100,7 +100,7 @@ export default {
       },
       async markAllAsRead() {
         const notificationIds = this.items.map(item => item.id); // Extract all notification IDs
-        console.log('Marking all notifications as read:', notificationIds);
+        // console.log('Marking all notifications as read:', notificationIds);
         try {
           // Make an API call to mark all notifications as read
           // const response = await axios.put('http://localhost:5001/mark-all-as-read', {

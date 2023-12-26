@@ -51,7 +51,7 @@ export default {
       try {
         // const response = await axios.get('http://localhost:5001/barber_crud');
         const response = await axios.get(this.api_key+'/barber_crud');
-        console.log(response.data);
+        // console.log(response.data);
 
         if (typeof response.data === 'object') {
           // Convert the object into an array of objects
@@ -77,10 +77,10 @@ export default {
           // Call the updateServiceStatus method to send the PUT request
           this.updateServiceStatus(barberId, serviceId, service.Status);
         } else {
-          console.log('Service not found');
+          // console.log('Service not found');
         }
       } else {
-        console.log('Barber not found');
+        // console.log('Barber not found');
       }
     },
 
@@ -92,7 +92,7 @@ export default {
         });
 
         // Handle the response if needed
-        console.log(response.data);
+        // console.log(response.data);
       } catch (error) {
         console.error(error);
       }

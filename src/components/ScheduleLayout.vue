@@ -198,16 +198,16 @@ export default {
     mounted() {
     // Get user_id from local storage
     this.user_id = localStorage.getItem('userID');
-    console.log('User ID:', this.user_id);
+    // console.log('User ID:', this.user_id);
 
     // Set the default focus to today's date in CST
     const today = new Date();
     today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
 
-    console.log('Today in CST:', today); // Add this line for debugging
+    // console.log('Today in CST:', today); // Add this line for debugging
     this.focus = today;
     const formattedToday = today.toISOString().split('T')[0];
-    console.log('Formatted Today in CST:', formattedToday); // Add this line for debugging
+    // console.log('Formatted Today in CST:', formattedToday); // Add this line for debugging
 
     // Fetch user-specific appointments for today's date
     this.fetchDailyAppointments(formattedToday);
@@ -247,19 +247,19 @@ export default {
     const blockedTimeSlots = response.data;
 
     if (blockedTimeSlots && Object.keys(blockedTimeSlots).length > 0) {
-      console.log('Blocked Time Slots for', date, ':', blockedTimeSlots);
+      // console.log('Blocked Time Slots for', date, ':', blockedTimeSlots);
 
       const formattedBlockedTimeSlots = Object.values(blockedTimeSlots).map(blocked_slot => {
         // Log date and time strings for debugging
-        console.log('Raw Date and Time:', date, blocked_slot.start_time, blocked_slot.end_time);
+        // console.log('Raw Date and Time:', date, blocked_slot.start_time, blocked_slot.end_time);
 
         // Parse date and time strings correctly
         const startDate = new Date(`${blocked_slot.start_time}`);
         const endDate = new Date(`${blocked_slot.end_time}`);
 
         // Log parsed dates for debugging
-        console.log('Parsed Start Date:', startDate);
-        console.log('Parsed End Date:', endDate);
+        // console.log('Parsed Start Date:', startDate);
+        // console.log('Parsed End Date:', endDate);
 
         return {
           name: 'Blocked Time Slot',
@@ -274,7 +274,7 @@ export default {
       this.events = [...this.events, ...formattedBlockedTimeSlots];
 
       // Log the updated events array for debugging
-      console.log('Updated Events Array:', this.events);
+      // console.log('Updated Events Array:', this.events);
     } else {
       console.warn('Blocked Time Slots data is empty or invalid:', blockedTimeSlots);
     }
@@ -302,7 +302,7 @@ export default {
 
         // Set the available time slots to the newly fetched data
         this.availableTimeSlots = availableTimeSlots;
-        console.log('Available Time Slots:', typeof availableTimeSlots);
+        // console.log('Available Time Slots:', typeof availableTimeSlots);
 
 
         // console.log('Available Time Slots:', availableTimeSlots); // Add this line for debugging
@@ -341,7 +341,7 @@ export default {
         // const response = await axios.get(`http://localhost:5001/dailyappointments/${this.user_id}/${date}`);
         const response = await axios.get(this.api_key+`/dailyappointments/${this.user_id}/${date}`);
         const dailyAppointments = response.data.appointments;
-        console.log('Daily Appointments:', typeof dailyAppointments)
+        // console.log('Daily Appointments:', typeof dailyAppointments)
 
         // Map the API response to the format expected by the calendar component
         const newEvents = dailyAppointments.map(appointment => ({
@@ -357,7 +357,7 @@ export default {
         // Clear existing events and set them to the newly fetched data
         this.events = newEvents;
 
-        console.log('Daily Appointments for', date, ':', this.events);
+        // console.log('Daily Appointments for', date, ':', this.events);
       } catch (error) {
         console.error('Error fetching daily appointments:', error);
       }
@@ -384,7 +384,7 @@ export default {
         // Clear existing events and set them to the newly fetched data
         this.events = newEvents;
 
-        console.log('Weekly Appointments:', this.events);
+        // console.log('Weekly Appointments:', this.events);
       } catch (error) {
         console.error('Error fetching weekly appointments:', error);
       }
@@ -410,7 +410,7 @@ export default {
         // Clear existing events and set them to the newly fetched data
         this.events = newEvents;
 
-        console.log('Monthly Appointments:', this.events);
+        // console.log('Monthly Appointments:', this.events);
       } catch (error) {
         console.error('Error fetching monthly appointments:', error);
       }
@@ -436,7 +436,7 @@ export default {
         // Clear existing events and set them to the newly fetched data
         this.events = newEvents;
 
-        console.log('4-Day Appointments:', this.events);
+        // console.log('4-Day Appointments:', this.events);
       } catch (error) {
         console.error('Error fetching 4-day appointments:', error);
       }
@@ -461,7 +461,7 @@ async cancelAppointment() {
     // Make an Axios API call to cancel the selected appointment
     // const response = await axios.delete(`http://localhost:5001/cancelappointment/${this.selectedEventInfo.id}`);
     const response = await axios.delete(this.api_key+`/cancelappointment/${this.selectedEventInfo.id}`);
-    console.log('Cancel Appointment Response:', response);
+    // console.log('Cancel Appointment Response:', response);
 
     // Assuming the server response indicates success, update the appointment status locally
     if (response.status === 200) {
@@ -512,7 +512,7 @@ async cancelAppointment() {
       prevDate.setDate(prevDate.getDate() - 1); // Go to the previous day
       this.focus = prevDate;
       const formattedDate = prevDate.toISOString().split('T')[0];
-      console.log('Formatted Date:', formattedDate); // Add this line for debugging
+      // console.log('Formatted Date:', formattedDate); // Add this line for debugging
       this.fetchDailyAppointments(formattedDate);
       this.fetchBlockedTimeSlots(formattedDate);
       this.fetchAvailableTimeSlots(formattedDate);
@@ -523,7 +523,7 @@ async cancelAppointment() {
       nextDate.setDate(nextDate.getDate() + 1); // Go to the next day
       this.focus = nextDate;
       const formattedDate = nextDate.toISOString().split('T')[0];
-      console.log('Formatted Date:', formattedDate); // Add this line for debugging
+      // console.log('Formatted Date:', formattedDate); // Add this line for debugging
       this.fetchDailyAppointments(formattedDate);
       this.fetchAvailableTimeSlots(formattedDate);
       this.fetchBlockedTimeSlots(formattedDate);
@@ -534,7 +534,7 @@ async cancelAppointment() {
   this.selectedEventInfo = event.data;
 
   // Log selectedEventInfo to check if it contains appointment_id
-  console.log('Selected Event Info:', this.selectedEventInfo);
+  // console.log('Selected Event Info:', this.selectedEventInfo);
 
   // Store a reference to the DOM element that triggered the event click
   this.selectedElement = nativeEvent.target;

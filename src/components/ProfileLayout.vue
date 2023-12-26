@@ -92,10 +92,10 @@ methods: {
 
       if (success) {
         // Profile update was successful, you can show a success message or perform any other action
-        console.log('Profile updated successfully');
+        // console.log('Profile updated successfully');
       } else {
         // Profile update failed, you can display an error message
-        console.log('Profile update failed');
+        // console.log('Profile update failed');
       }
     } catch (error) {
       console.error('Error while saving profile changes:', error);

@@ -36,7 +36,7 @@
 
     watch: {
         dialog(newVal) {
-        console.log('Dialog value changed:', newVal);
+        // console.log('Dialog value changed:', newVal);
         if (!newVal) {
             this.resetState();
         }
@@ -45,7 +45,7 @@
         if (newVal !== this.dialog) {
             this.$emit('update:dialog', newVal);
         }
-        console.log('Local dialog value changed:', newVal);
+        // console.log('Local dialog value changed:', newVal);
         if (!newVal) {
             this.resetState();
         }
@@ -56,11 +56,11 @@
         try {
             // const response = await axios.post(`http://localhost:5001/addservice`, this.editedService);
             const response = await axios.post(this.api_key+`/addservice`, this.editedService);
-            console.log(response);
+            // console.log(response);
             this.$emit('service-added', this.editedService);
             this.closeDialog();
         } catch (error) {
-            console.log(error);
+            // console.log(error);
         }
         },
 
