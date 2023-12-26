@@ -137,7 +137,7 @@ export default {
   watch: {
     // Watch for changes to userRole and log them
     userRole(newValue) {
-      // console.log('userRole changed: ', newValue);
+      console.log('userRole changed: ', newValue);
     },
   },
   computed: {

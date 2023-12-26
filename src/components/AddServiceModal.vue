@@ -56,7 +56,7 @@
         try {
             // const response = await axios.post(`http://localhost:5001/addservice`, this.editedService);
             const response = await axios.post(this.api_key+`/addservice`, this.editedService);
-            // console.log(response);
+            console.log(response);
             this.$emit('service-added', this.editedService);
             this.closeDialog();
         } catch (error) {

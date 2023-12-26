@@ -92,7 +92,7 @@ export default {
         });
 
         // Handle the response if needed
-        // console.log(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
       }

@@ -66,7 +66,7 @@ fetchServicesBasedOnUserRole() {
         // console.log(this.services);
       })
       .catch((error) => {
-        // console.log(error);
+        console.log(error);
       });
   } else {
     // Fetch services for non-logged-in users or other roles
@@ -88,7 +88,7 @@ fetchServicesBasedOnUserRole() {
         // console.log(this.services);
       })
       .catch((error) => {
-        // console.log(error);
+        console.log(error);
       });
   }
 },

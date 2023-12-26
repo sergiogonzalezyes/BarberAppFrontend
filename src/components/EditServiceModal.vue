@@ -54,7 +54,7 @@ methods: {
     try {
         // const response = await axios.put(`http://localhost:5001/updateservice/${this.editedService.Service_ID}`, this.editedService);
         const response = await axios.put(this.api_key+`/updateservice/${this.editedService.Service_ID}`, this.editedService);
-        // console.log(response);
+        console.log(response);
         this.$emit('service-updated', this.editedService);
         this.closeDialog();
     } catch (error) {
