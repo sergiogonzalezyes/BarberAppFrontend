@@ -493,7 +493,15 @@ async cancelAppointment() {
     setToday() {
     // Calculate the current date in the local timezone
     const today = new Date();
+
+    console.log('TodayvAR:', today)
+
+
     today.setHours(today.getHours()); // Subtract 5 hours for CST (UTC-6)
+
+    console.log('FIRST: TodayvAR:', today.setHours(today.getHours()))
+    console.log('SECOND: TodayvAR:', today.setHours(today.getHours() - 6))
+
     
 
     // Format the current date to match your date format (e.g., "YYYY-MM-DD")
