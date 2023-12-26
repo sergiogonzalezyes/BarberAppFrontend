@@ -2,9 +2,9 @@
     <div class="barbers">
       <BarbersCRUDops />
     </div>
-  </template>
+</template>
   
-  <script>
+<script>
   import BarbersCRUDops from '../components/BarbersCRUD.vue';
   
   export default {
@@ -22,5 +22,5 @@
       align-items: center;
     }
   }
-  </style>
+</style>
   

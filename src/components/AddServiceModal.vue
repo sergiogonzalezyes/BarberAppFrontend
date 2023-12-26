@@ -18,9 +18,9 @@
 
         </v-card>
     </v-dialog>
-    </template>
+</template>
     
-    <script>
+<script>
     import axios from 'axios'; // Import axios here
     export default {
     name: 'AddServiceModal',
@@ -30,6 +30,7 @@
         localDialog: this.dialog,
         valid: false,
         editedService: {}, // Empty object
+        api_key: process.env.VUE_APP_PROD_API,
     };
 },
 
@@ -53,7 +54,8 @@
     methods: {
         async submitForm() {
         try {
-            const response = await axios.post(`http://localhost:5001/addservice`, this.editedService);
+            // const response = await axios.post(`http://localhost:5001/addservice`, this.editedService);
+            const response = await axios.post(this.api_key+`/addservice`, this.editedService);
             console.log(response);
             this.$emit('service-added', this.editedService);
             this.closeDialog();

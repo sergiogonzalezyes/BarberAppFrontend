@@ -32,6 +32,9 @@
             <div>
                 <strong>Service Price:</strong> ${{ appointmentDetails.Service_Price }}
             </div>
+            <div>
+                <strong>Payment Method:</strong> {{ appointmentDetails.Payment_Type_Name }}
+            </div>
         </div>
     </v-card-text>
     </v-card>
@@ -47,7 +50,7 @@ data() {
 return {
 dialogOpen: this.dialog,
 appointmentDetails: null, // Local data property to store appointment details
-
+api_key: process.env.VUE_APP_PROD_API,
 };
 },
 watch: {
@@ -75,7 +78,8 @@ console.log('Dialog closed');
 async fetchAppointmentDetails() {
 try {
     // Fetch appointment details here
-    const response = await axios.get(`http://localhost:5001/appointments/${this.notification.appointment_id}`);
+    // const response = await axios.get(`http://localhost:5001/appointments/${this.notification.appointment_id}`);
+    const response = await axios.get(this.api_key+`/appointments/${this.notification.appointment_id}`);
     const data = response.data;
     console.log('Appointment details:', data);
 

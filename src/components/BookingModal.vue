@@ -32,7 +32,7 @@
 
         <!-- Time Selection Section -->
         <v-select
-        :items="availableTimeSlots"
+        :items="formattedTimeSlots"
         item-text="start_time"
         item-value="slotNumber"
         v-model="selectedTimeSlot"
@@ -84,6 +84,8 @@ export default {
       selectedTimeSlot: null,
       availablePaymentMethods: [],
       selectedPaymentMethod: null,
+      formattedTimeSlots: [],
+      api_key: process.env.VUE_APP_PROD_API,
     };
   },
   watch: {
@@ -112,9 +114,25 @@ export default {
     },
   },
   methods: {
+    formatTime(timeString) {
+  // Parse the input time string
+  const [hours, minutes] = timeString.split(":").map(Number);
+
+  // Determine whether it's AM or PM
+  const period = hours >= 12 ? "PM" : "AM";
+
+  // Convert hours to 12-hour format
+  const formattedHours = hours % 12 || 12;
+
+  // Format the time in "h:mmA" format
+  const formattedTime = `${formattedHours}:${minutes.toString().padStart(2, "0")}${period}`;
+
+  return formattedTime;
+},
     async fetchBarbersAndTimeSlots(serviceId) {
       try {
-        const response = await axios.get(`http://localhost:5001/service/${serviceId}/availability`);
+        // const response = await axios.get(`http://localhost:5001/service/${serviceId}/availability`);
+        const response = await axios.get(this.api_key+`/service/${serviceId}/availability`);
         const data = response.data;
 
         this.availableBarbersOptions = data.map(barber => ({
@@ -127,7 +145,8 @@ export default {
     },
     async fetchAvailableDatesForBarber(barber_id) {
       try {
-        const response = await axios.get(`http://localhost:5001/schedule/${barber_id}/available-dates`);
+        // const response = await axios.get(`http://localhost:5001/schedule/${barber_id}/available-dates`);
+        const response = await axios.get(this.api_key+`/schedule/${barber_id}/available-dates`);
         const data = response.data;
         console.log('Available dates:', data);
 
@@ -138,32 +157,39 @@ export default {
     },
     async fetchAvailableTimeSlotsForDate() {
   try {
-    const response = await axios.get(`http://localhost:5001/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
+    // const response = await axios.get(`http://localhost:5001/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
+    const response = await axios.get(this.api_key+`/schedule/${this.selectedBarber}/available-time-slots?date=${this.selectedDateFormatted}`);
     const data = response.data;
     console.log('Available time slots:', data)
     
-    // Convert the object to an array of time slot objects and format the time
+    // Store the original time slots with the backend format
     this.availableTimeSlots = Object.keys(data.available_time_slots).map(slotNumber => {
       const timeSlot = data.available_time_slots[slotNumber];
-      const startTime = timeSlot.start_time;
-      const endTime = timeSlot.end_time;
-      
       return {
         slotNumber: parseInt(slotNumber),
-        start_time: startTime,
-        end_time: endTime
+        start_time: timeSlot.start_time,
+        end_time: timeSlot.end_time
       };
     });
 
-    console.log('Available time slots:', this.availableTimeSlots);
+    // Create a separate variable for display with formatted times
+    this.formattedTimeSlots = this.availableTimeSlots.map(slot => ({
+      ...slot,
+      start_time: this.formatTime(slot.start_time),
+      end_time: this.formatTime(slot.end_time),
+    }));
+
+    console.log('Available time slots:', this.formattedTimeSlots);
   } catch (error) {
     console.error('Error fetching available time slots:', error);
   }
 },
 
+
 async fetchPaymentMethods() {
   try {
-    const response = await axios.get('http://localhost:5001/payment-methods');
+    // const response = await axios.get('http://localhost:5001/payment-methods');
+    const response = await axios.get(this.api_key+'/payment-methods');
     const responseData = response.data;
 
     if (Array.isArray(responseData.payment_methods)) {
@@ -251,7 +277,9 @@ async fetchPaymentMethods() {
 
     // Make an Axios POST request to send bookingData to your backend
     axios
-      .post('http://localhost:5001/bookings', bookingData)
+      // .post('http://localhost:5001/bookings', bookingData)
+      .post(this.api_key+'/bookings', bookingData)
+
       .then(() => {
         // Handle success
         alert('Booking Successful!');

@@ -7,6 +7,7 @@
 </template>
 
 <script>
+
 import axios from 'axios';
 import ServicesLayout from '@/components/ServicesLayout.vue';
 import FooterPartial from '@/components/FooterPartial.vue';
@@ -15,6 +16,7 @@ export default {
 data() {
     return {
     services: [],
+    api_key: process.env.VUE_APP_PROD_API,
     };
 },
 computed: {
@@ -44,9 +46,12 @@ methods: {
 fetchServicesBasedOnUserRole() {
   if (this.userRole === 'admin' || this.userRole === 'barber') {
     // Fetch services offered by the logged-in admin or barber
-    axios.get(`http://localhost:5001/services/${this.userId}`)
+    // axios.get(`http://localhost:5001/services/${this.userId}`)
+    axios.get(this.api_key+`/services/${this.userId}`)
+
       .then((response) => {
         const servicesData = response.data.services;
+        console.log(servicesData)
 
         // Manually add image paths to each service based on naming convention
         const servicesWithImages = servicesData.map((service, index) => {
@@ -65,10 +70,11 @@ fetchServicesBasedOnUserRole() {
       });
   } else {
     // Fetch services for non-logged-in users or other roles
-    axios.get('http://localhost:5001/services')
+    // axios.get('http://localhost:5001/services')
+      axios.get(this.api_key+'/services')
       .then((response) => {
         const servicesData = response.data.services;
-
+        console.log(servicesData)
         // Assuming your API provides image URLs for each service
         const servicesWithImages = servicesData.map((service, index) => {
           const imageNumber = (index % 3) + 1; // Cycles through 1, 2, 3
@@ -102,6 +108,7 @@ components: {
 },
 mounted() {
     console.log('ServicesView mounted');
+    console.log(this.api_key)
 },
 beforeDestroy() {
     console.log('ServicesView will be destroyed');

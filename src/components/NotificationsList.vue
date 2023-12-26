@@ -51,6 +51,7 @@ export default {
       user_id: null,
       selectedNotification: null,
       dialogOpen: false,
+      api_key: process.env.VUE_APP_PROD_API,
     }),
 
     methods: {
@@ -67,7 +68,9 @@ export default {
           this.user_id = localStorage.getItem('userID'); // Retrieve user_id from localStorage
 
           // Fetch notifications using the user ID
-          const response = await axios.get(`http://localhost:5001/notifications/${this.user_id}`);
+          // const response = await axios.get(`http://localhost:5001/notifications/${this.user_id}`);
+          const response = await axios.get(this.api_key+`/notifications/${this.user_id}`);
+
           this.items = response.data.notifications;
 
           console.log('Notifications:', this.items);
@@ -85,7 +88,8 @@ export default {
         console.log('Marking notification as read:', notificationId)
         try {
           // Make an API call to mark the notification as read
-          const response = await axios.put(`http://localhost:5001/mark-as-read/${notificationId}`);
+          // const response = await axios.put(`http://localhost:5001/mark-as-read/${notificationId}`);
+          const response = await axios.put(this.api_key+`/mark-as-read/${notificationId}`);
           if (response.data.success) {
             // Update the status locally
             this.items[index].Notification_Status = 'Read';
@@ -99,7 +103,8 @@ export default {
         console.log('Marking all notifications as read:', notificationIds);
         try {
           // Make an API call to mark all notifications as read
-          const response = await axios.put('http://localhost:5001/mark-all-as-read', {
+          // const response = await axios.put('http://localhost:5001/mark-all-as-read', {
+          const response = await axios.put(this.api_key+'/mark-all-as-read', {
             notificationIds: notificationIds,
           });
           if (response.data.success) {

@@ -68,6 +68,7 @@
 </template>
 
 <script>
+
 import axios from 'axios';
 import EditServiceModal from '@/components/EditServiceModal.vue';
 import BookingModal from '@/components/BookingModal.vue';
@@ -80,6 +81,7 @@ export default {
       selectedService: null,
       editDialogOpen: false,
       bookDialogOpen: false,
+      api_key: process.env.VUE_APP_PROD_API,
     };
   },
   components: {
@@ -107,7 +109,8 @@ export default {
         const userId = localStorage.getItem('userID');
 
         // Make an HTTP DELETE request to the backend API with user_id as a query parameter
-        await axios.delete(`http://localhost:5001/services/${serviceId}/${userId}`);
+        // await axios.delete(`http://localhost:5001/services/${serviceId}/${userId}`);
+          await axios.delete(this.api_key+`/services/${serviceId}/${userId}`);
 
 
        // Emit an event to inform the parent component that a service has been deleted
@@ -124,7 +127,8 @@ export default {
         const userId = localStorage.getItem('userID');
 
         // Make an HTTP DELETE request to the backend API with user_id as a query parameter
-        await axios.put(`http://localhost:5001/services/disable/${serviceId}/${userId}`);
+        // await axios.put(`http://localhost:5001/services/disable/${serviceId}/${userId}`);
+        await axios.put(this.api_key+`/services/disable/${serviceId}/${userId}`);
       } catch (error) {
         console.error(`Error disabling service: ${error}`);
       }

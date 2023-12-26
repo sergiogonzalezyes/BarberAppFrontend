@@ -29,6 +29,7 @@ data() {
     localDialog: this.dialog,
     valid: false,
     editedService: { ...this.service }, // Create a copy of the prop
+    api_key: process.env.VUE_APP_PROD_API,
     };
 },
 watch: {
@@ -51,7 +52,8 @@ watch: {
 methods: {
     async submitForm() {
     try {
-        const response = await axios.put(`http://localhost:5001/updateservice/${this.editedService.Service_ID}`, this.editedService);
+        // const response = await axios.put(`http://localhost:5001/updateservice/${this.editedService.Service_ID}`, this.editedService);
+        const response = await axios.put(this.api_key+`/updateservice/${this.editedService.Service_ID}`, this.editedService);
         console.log(response);
         this.$emit('service-updated', this.editedService);
         this.closeDialog();

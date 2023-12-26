@@ -57,7 +57,7 @@ export default {
   actions: {
     async login({ commit, dispatch }, { username, password }) {
       try {
-        const response = await axios.post('http://localhost:5001/login', { username, password });
+        const response = await axios.post('https://test-2sb6bnbx7a-uc.a.run.app/login', { username, password });
 
         if (response.data && response.data.success) {
           const user = response.data.user;
@@ -134,9 +134,8 @@ export default {
       try {
         // Include the username in the payload
         userData.username = state.username; // Access the username from the state
-    
         // Make a PUT request to update the user profile
-        const response = await axios.put('http://localhost:5001/update-profile', userData);
+        const response = await axios.put('https://test-2sb6bnbx7a-uc.a.run.app/update-profile', userData);
     
         if (response.data && response.data.success) {
           // Update the user profile in the store if the backend update was successful
